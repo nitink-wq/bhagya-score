@@ -1,0 +1,81 @@
+# Local dev/test: postgres + a one-shot migration run + the app.
+# Mirrors the production flow (migrate once, then start pods).
+#
+#   docker compose up --build
+#   open http://localhost:3000
+#
+name: bhagya-score
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: bhagya
+      POSTGRES_PASSWORD: bhagya
+      POSTGRES_DB: bhagya
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bhagya -d bhagya"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Runs migrations exactly once, then exits (service_completed_successfully gate below).
+  migrate:
+    build: .
+    command: ["npx", "node-pg-migrate", "up"]
+    environment:
+      DATABASE_URL: postgres://bhagya:bhagya@postgres:5432/bhagya
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  app:
+    build: .
+    environment:
+      DATABASE_URL: postgres://bhagya:bhagya@postgres:5432/bhagya
+      PORT: "3000"
+      NODE_ENV: production
+      LOG_LEVEL: info
+      # Optional: enable the in-process nightly generator locally.
+      CONTENT_SCHEDULER_ENABLED: "${CONTENT_SCHEDULER_ENABLED:-false}"
+      CONTENT_RUN_HOUR_IST: "1"
+      CONTENT_LANGS: "en"
+      GEMINI_API_KEY: "${GEMINI_API_KEY:-}"
+      GEMINI_MODEL: "${GEMINI_MODEL:-gemini-2.0-flash}"
+      INTERNAL_TOKEN: "${INTERNAL_TOKEN:-}"
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  # One-shot manual content generation for local testing:
+  #   GEMINI_API_KEY=... docker compose run --rm generate
+  # (Uses the same image; overrides the command to run the job entrypoint.)
+  generate:
+    build: .
+    command: ["node", "dist/jobs/generateDailyContent.js"]
+    profiles: ["tools"]
+    environment:
+      DATABASE_URL: postgres://bhagya:bhagya@postgres:5432/bhagya
+      GEMINI_API_KEY: "${GEMINI_API_KEY:-}"
+      GEMINI_MODEL: "${GEMINI_MODEL:-gemini-2.0-flash}"
+      CONTENT_LANGS: "${CONTENT_LANGS:-en}"
+      GENERATE_DATE: "${GENERATE_DATE:-}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    restart: "no"
+
+volumes:
+  pgdata:

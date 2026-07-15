@@ -1,0 +1,65 @@
+# Stateless app, 3 replicas. Any pod serves any request.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bhagya-score
+  labels:
+    app: bhagya-score
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: bhagya-score
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: bhagya-score
+    spec:
+      # Give in-flight requests time to finish on SIGTERM (matches SHUTDOWN_TIMEOUT_MS).
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: bhagya-score
+          image: ghcr.io/your-org/bhagya-score:latest # <-- replace
+          ports:
+            - name: http
+              containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: bhagya-score-config
+            - secretRef:
+                name: bhagya-score-secret
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "192Mi"
+            limits:
+              cpu: "1"
+              memory: "384Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]

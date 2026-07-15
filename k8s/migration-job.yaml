@@ -1,0 +1,47 @@
+# Runs database migrations exactly ONCE per deploy, before/independently of the pods.
+#
+# Why a Job (not an initContainer on every pod): with multiple replicas you don't
+# want N pods racing to migrate. This Job runs a single migration pass.
+# node-pg-migrate additionally takes a Postgres advisory lock and records applied
+# migrations in `pgmigrations`, so it is idempotent and safe even if retried.
+#
+# Apply it before rolling the Deployment:
+#   kubectl apply -f k8s/migration-job.yaml
+#   kubectl wait --for=condition=complete job/bhagya-score-migrate --timeout=120s
+#   kubectl apply -f k8s/deployment.yaml
+#
+# With Helm, add the hook annotations below to run it automatically each release.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: bhagya-score-migrate
+  # annotations:
+  #   "helm.sh/hook": pre-install,pre-upgrade
+  #   "helm.sh/hook-weight": "-5"
+  #   "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      name: bhagya-score-migrate
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+      containers:
+        - name: migrate
+          image: ghcr.io/your-org/bhagya-score:latest # <-- replace (same image as the app)
+          command: ["npx", "node-pg-migrate", "up"]
+          envFrom:
+            - configMapRef:
+                name: bhagya-score-config
+            - secretRef:
+                name: bhagya-score-secret
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"

@@ -1,0 +1,58 @@
+# Nightly content generation via Gemini (the "proper" production option).
+#
+# Runs the SAME image as the app, but with the job command instead of the server.
+# The advisory lock inside the job means it's safe even if it overlaps a run
+# triggered by the in-process scheduler — only one actually writes.
+#
+# Schedule note: Kubernetes CronJob `schedule` is evaluated in the cluster's
+# timezone (often UTC). 19:30 UTC == 01:00 IST. If your cluster supports the
+# CronJob `timeZone` field (k8s >= 1.27), you can instead set schedule "0 1 * * *"
+# with timeZone: "Asia/Kolkata".
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bhagya-score-generate
+  labels:
+    app: bhagya-score
+spec:
+  schedule: "30 19 * * *"        # 01:00 IST
+  # timeZone: "Asia/Kolkata"     # uncomment on k8s >= 1.27 and use schedule "0 1 * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 3600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      ttlSecondsAfterFinished: 86400
+      template:
+        metadata:
+          labels:
+            app: bhagya-score
+        spec:
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: generate
+              image: ghcr.io/your-org/bhagya-score:latest # <-- replace (same image as the app)
+              command: ["node", "dist/jobs/generateDailyContent.js"]
+              envFrom:
+                - configMapRef:
+                    name: bhagya-score-config
+                - secretRef:
+                    name: bhagya-score-secret
+              resources:
+                requests:
+                  cpu: "50m"
+                  memory: "128Mi"
+                limits:
+                  cpu: "500m"
+                  memory: "256Mi"
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
