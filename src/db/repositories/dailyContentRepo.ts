@@ -27,6 +27,18 @@ export class DailyContentRepository {
   }
 
   /**
+   * Recent rows (newest first), used to build the generator's prompt context:
+   * yesterday's scores + the last few days of band lines (anti-repetition).
+   */
+  async getRecentRows(lang: string, onOrBefore: string, limit: number): Promise<Array<{ date: string; payload: DailyPayload }>> {
+    const res = await this.db.query<{ date: string; payload: DailyPayload }>(
+      'SELECT date::text AS date, payload FROM daily_content WHERE lang = $1 AND date <= $2 ORDER BY date DESC LIMIT $3',
+      [lang, onOrBefore, limit],
+    );
+    return res.rows;
+  }
+
+  /**
    * Insert-or-replace the content for a (date, lang). Used by the nightly generator.
    * Idempotent: re-running the generator for the same day just refreshes the row.
    */

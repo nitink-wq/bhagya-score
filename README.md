@@ -62,8 +62,8 @@ npm run dev              # hot-reload dev server
 |---|---|
 | **Daily content via Gemini → DB → page** | Generated nightly and stored in `daily_content`; the page only reads it. See **[docs/CONTENT_GENERATION.md](docs/CONTENT_GENERATION.md)**. Code: `src/services/contentGenerator.ts`, `src/jobs/generateDailyContent.ts`, `src/scheduler.ts`. |
 | **`?user_id=` passthrough on redirect** | The page reads `user_id` from its URL, never displays it, and carries it into every analytics event and into the CTA deep link. |
-| **CTA deep-links to the app feed** | "Talk to an astrologer" navigates to `astrolokal://feed?source=bhagya_score&user_id=…&rashi=…` (one editable line, `DEEPLINK_SCHEME`, in `public/index.html`). |
-| **Edge-case states** | No `user_id` → **login gate** (bypass with `?preview=1`). Every user lands on a **default sign** (Aries) + swipe hint (the page takes only `user_id` — no `dob`). While loading → **shimmer** skeletons. DB unreachable → **saved content + "Retry" nudge** (6s fetch timeout). Nothing renderable → **error screen + Try again**. |
+| **CTA deep-links into the app** | "Talk to an astrologer" navigates to `astrolokal://HomeScreen?source=bhagya_score&user_id=…&rashi=…` (one editable line, `DEEPLINK_SCHEME`, in `public/index.html`). |
+| **Edge-case states** | No `user_id` → **login gate** (bypass with `?preview=1`). Every user lands on a **default sign** (Aries) and switches via the **rashi pill → bottom sheet** (the page takes only `user_id` — no `dob`). While loading → **shimmer** skeletons. DB unreachable → **saved content + "Retry" nudge** (6s fetch timeout). Nothing renderable → **error screen + Try again**. |
 
 ## Migrations
 

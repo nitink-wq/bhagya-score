@@ -54,7 +54,10 @@ export interface AppConfig {
     schedulerEnabled: boolean;
     /** Hour (0-23, Asia/Kolkata) at which the nightly job runs. */
     runHourIST: number;
-    /** How many days ahead to generate. 1 = tonight we generate tomorrow's content. */
+    /**
+     * How many days ahead to generate. 0 (default) = the 01:00 IST run generates
+     * content for that same calendar day, which goes LIVE at the 6 AM IST cutover.
+     */
     generateForOffsetDays: number;
     /** Languages to generate each night. */
     langs: string[];
@@ -86,9 +89,12 @@ export const config: AppConfig = {
   },
 
   content: {
-    schedulerEnabled: bool('CONTENT_SCHEDULER_ENABLED', false),
+    // ON by default: with a GEMINI_API_KEY present, every night refreshes all 12 rashis
+    // automatically (multi-pod safe). Set CONTENT_SCHEDULER_ENABLED=false to opt out
+    // (e.g. when using the separate k8s CronJob instead).
+    schedulerEnabled: bool('CONTENT_SCHEDULER_ENABLED', true),
     runHourIST: int('CONTENT_RUN_HOUR_IST', 1), // 01:00 IST by default
-    generateForOffsetDays: int('CONTENT_GENERATE_OFFSET_DAYS', 1),
+    generateForOffsetDays: int('CONTENT_GENERATE_OFFSET_DAYS', 0), // 01:00 run -> live at the 6 AM cutover
     langs: list('CONTENT_LANGS', ['en']),
   },
 };

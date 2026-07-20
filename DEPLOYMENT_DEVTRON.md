@@ -46,7 +46,7 @@ What Devtron *does* use from the repo is the **Dockerfile**.
 2. **A Gemini API key** from Google AI Studio (for nightly content). Ask whoever owns the
    Google Cloud / AI Studio billing to issue one. You'll paste it into a Devtron *secret*.
 3. **The exact app deep link** for the "Talk to an astrologer" button. I've set it to
-   `astrolokal://feed` — **confirm the real scheme/path with the app developer** (see
+   `astrolokal://HomeScreen` — **confirm the real scheme/path with the app developer** (see
    "Deep link" section below).
 
 ---
@@ -94,7 +94,7 @@ Create **one secret** (pattern `astrolokal-bhagya-score`) and add these via the 
 |---|---|---|
 | `DATABASE_URL` | `postgres://astrolokal_bhagya_score:<password>@<host>:5432/astrolokal_bhagya_score` | C2S gives you host/password. Add `?sslmode=require` if they say so. |
 | `GEMINI_API_KEY` | `AIza…` | From Google AI Studio. |
-| `CONTENT_SCHEDULER_ENABLED` | `true` | Lets the app generate content nightly by itself (simplest). |
+| `CONTENT_SCHEDULER_ENABLED` | *(not needed — already the default)* | Nightly generation is ON by default when `GEMINI_API_KEY` is set. |
 | `CONTENT_RUN_HOUR_IST` | `1` | Runs at 01:00 IST. |
 | `CONTENT_LANGS` | `en` | Comma-separated if you add languages later. |
 | `INTERNAL_TOKEN` | *(a long random string)* | Lets you trigger a manual content refresh for testing. Optional. |
@@ -179,10 +179,8 @@ Role_name - astrolokal-bhagya-score-dev-readonly
 
 **Product/decisions (you):**
 - [ ] Confirm the Devtron **project** name (`astrolokal`?).
-- [ ] Confirm **which variant launches**: Variant A (`/`) or Variant B with the Today/Tomorrow
-      lock (`/variant-b`). The served default is currently Variant A.
 - [ ] Confirm **content languages** (currently `en` only).
-- [ ] Confirm the **deep link** the CTA should open (currently `astrolokal://feed`) — get the
+- [ ] Confirm the **deep link** the CTA should open (currently `astrolokal://HomeScreen`) — get the
       exact scheme + path from the app dev, and confirm the app passes `user_id`/`source` through.
 
 **Access / infra (other teams):**
@@ -195,10 +193,9 @@ Role_name - astrolokal-bhagya-score-dev-readonly
 **Verify after deploy:**
 - [ ] Open the internal URL → the page loads and shows a rashi + score.
 - [ ] Open it **without** `?user_id` → you get the **login gate** ("Open AstroLokal app"). Add `?preview=1` to bypass the gate for internal viewing/testing.
-- [ ] `?user_id=test123` → lands on the default sign (Aries) with a "swipe to your sign" hint (the page only reads `user_id`).
+- [ ] `?user_id=test123` → lands on the default sign (Aries); the rashi pill opens the "Choose your Rashi" sheet (the page only reads `user_id`).
 - [ ] `?user_id=test123` in the URL → CTA opens the app (`astrolokal://HomeScreen`) and carries `user_id` through.
 - [ ] Tap "Talk to an astrologer" → app opens the feed.
-- [ ] `SELECT count(*) FROM events;` grows as you interact (analytics working).
 - [ ] Next morning: `SELECT * FROM content_generation_runs ORDER BY created_at DESC LIMIT 5;`
       shows a `success` row — nightly Gemini generation ran.
 - [ ] `SELECT date, lang FROM daily_content ORDER BY date DESC LIMIT 5;` shows fresh rows.
@@ -210,9 +207,9 @@ Role_name - astrolokal-bhagya-score-dev-readonly
 The button "Talk to an astrologer" currently navigates to:
 
 ```
-astrolokal://feed?source=bhagya_score&user_id=<user_id>&rashi=<rashi>
+astrolokal://HomeScreen?source=bhagya_score&user_id=<user_id>&rashi=<rashi>
 ```
 
-Edit one line in `public/index.html` (and `public/variant-b.html`) if the scheme/path differs —
+Edit one line in `public/index.html` if the scheme/path differs —
 search for `DEEPLINK_SCHEME`. The `user_id` you pass in the page URL (`?user_id=…`) is carried
 through automatically; it is never shown on screen.

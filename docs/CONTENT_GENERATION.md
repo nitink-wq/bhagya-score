@@ -2,12 +2,16 @@
 
 ## What happens, in plain words
 
-1. **Every night** (default 01:00 IST) a job wakes up.
-2. It asks **Gemini** for fresh copy for all 12 rashis (score, reading, lucky insights,
-   a curiosity hook) in one call, and tells it to return strict JSON.
-3. The job **validates** that JSON hard. If anything is off (not 12 signs, a missing field,
-   junk instead of a number), it is **rejected and nothing is written** — yesterday's content
-   stays live, so the page never breaks.
+1. **Every night** (default 01:00 IST) a job wakes up and generates content for that
+   same calendar day. The new day goes **live at the 6:00 AM IST cutover** — before 6 AM
+   users still see the previous day.
+2. It asks **Gemini** for fresh copy for all 12 signs in one call (score, band + reason
+   lines, insight, the 3 "Things to look out for" lines, lucky values), passing
+   yesterday's scores and the last 3 days of band lines so content doesn't repeat.
+3. The job **validates** every sign hard: schema + numeric bounds (score 42-94), length
+   limits, and a banned-word / em-dash / theme lint. Signs that fail are **regenerated
+   once** (only the offending signs). If anything still fails, the run is **rejected and
+   nothing is written** — yesterday's content stays live, so the page never breaks.
 4. If valid, it **saves** the payload into the `daily_content` table for the target date.
 5. The **web page just reads** from `daily_content` (via `/api/daily-content`). It never talks
    to Gemini itself. If the DB is ever empty/unreachable, the page falls back to the most recent
@@ -27,7 +31,7 @@ once per night (not per visitor) makes the page **fast, cheap, and reliable**.
 
 | Option | How | When to use |
 |---|---|---|
-| **In-process scheduler** (default for launch) | Set `CONTENT_SCHEDULER_ENABLED=true` on the app. Every pod ticks at `CONTENT_RUN_HOUR_IST`; a Postgres **advisory lock** ensures only ONE pod actually calls Gemini. | Simplest — no extra Devtron/K8s object. |
+| **In-process scheduler** (the default — ON out of the box) | Nothing to configure: with `GEMINI_API_KEY` set, every pod ticks at `CONTENT_RUN_HOUR_IST` and a Postgres **advisory lock** ensures only ONE pod actually calls Gemini. Set `CONTENT_SCHEDULER_ENABLED=false` to opt out. | Simplest — no extra Devtron/K8s object. |
 | **Kubernetes CronJob** | `k8s/cronjob.yaml` (same image, `node dist/jobs/generateDailyContent.js`). | Cleaner separation; if DevOps prefers a real CronJob. |
 | **Manual / on-demand** | `POST /internal/generate-content` with header `x-internal-token: <INTERNAL_TOKEN>`, or `npm run generate` locally. | Testing, back-filling a date, or an external scheduler. |
 
@@ -38,8 +42,8 @@ All three call the **same** `generateAndStore()` function, so behaviour is ident
 | Thing | Where | How |
 |---|---|---|
 | **Gemini API key** | env var `GEMINI_API_KEY` (+ `GEMINI_MODEL`) | Local: put it in `.env`. Devtron: add it as a **secret**. Read in `src/config.ts`. The web server boots without it; only the generator needs it. |
-| **The prompt** | `src/services/contentGenerator.ts` → **`buildPrompt()`** | This is the single function that builds the text sent to Gemini. Edit the wording/tone/rules here. |
-| **The output schema** | `src/services/contentGenerator.ts` → **`RESPONSE_SCHEMA`** | The exact JSON shape Gemini is *forced* to return (passed as `responseSchema`). Edit here if you change fields. `validateAndBuildPayload()` right below is the final safety net that rejects bad output. |
+| **The prompt** | `src/services/contentGenerator.ts` → **`SYSTEM_PROMPT`** (voice + hard rules) and **`buildUserPrompt()`** (date, schema, yesterday's scores, band history) | Edit the wording/tone/rules here. |
+| **The output schema** | `src/services/contentGenerator.ts` → **`RESPONSE_SCHEMA`** (via `signArraySchema()`) | One object per sign: `{sign, score, band, reason, insight, signs[3], lucky:{num,time,cols}}`. Gemini is *forced* to this shape (`responseSchema`), and **`validateSign()`** is the final safety net (bounds, lengths, banned words, one-planet rule, exactly 3 look-out lines with no questions). |
 
 Nothing else is required in code — the app is **self-sufficient**: given a `DATABASE_URL` and a
 `GEMINI_API_KEY`, it calls Gemini, validates, writes `daily_content`, and serves the page from it.
@@ -51,9 +55,9 @@ The two things it needs from outside are just (1) a Postgres database and (2) th
 |---|---|---|
 | `GEMINI_API_KEY` | — | Required for generation. The web server boots without it. |
 | `GEMINI_MODEL` | `gemini-2.0-flash` | Change model without touching code. |
-| `CONTENT_SCHEDULER_ENABLED` | `false` | Turn the in-app nightly scheduler on. |
+| `CONTENT_SCHEDULER_ENABLED` | `true` | Nightly scheduler is ON by default; set `false` only if you run the separate CronJob instead. |
 | `CONTENT_RUN_HOUR_IST` | `1` | Hour (IST) to run. |
-| `CONTENT_GENERATE_OFFSET_DAYS` | `1` | `1` = tonight generate tomorrow's content. |
+| `CONTENT_GENERATE_OFFSET_DAYS` | `0` | `0` = the 01:00 IST run generates the same calendar day; it goes live at the 6 AM cutover. |
 | `CONTENT_LANGS` | `en` | Comma-separated languages to generate. |
 | `INTERNAL_TOKEN` | — | Guards the manual endpoint. Empty = endpoint disabled (404). |
 

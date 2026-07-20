@@ -10,7 +10,7 @@
 
 <!--
 ==================================================================================
-  BHAGYA SCORE — premium cream/peach redesign for AstroLokal
+  BHAGYA SCORE - premium cream/peach redesign for AstroLokal
   Single self-contained mobile webview. Drives a consultation via the sticky CTA.
   Arc: logo -> score -> rashi strip -> reading+lucky -> blurred guidance -> CTA.
 ==================================================================================
@@ -97,35 +97,23 @@
   .g-den{font-size:12.5px;font-weight:600;color:var(--ink-2);margin-top:2px}
   .g-label{font-size:14.5px;font-weight:600;color:#8C7263;margin-top:14px;letter-spacing:.3px}
 
-  /* ---------- rashi strip (3-window) ---------- */
-  .selector{display:flex;flex-direction:column;align-items:center;gap:7px}
-  .strip{display:flex;align-items:center;justify-content:center;gap:6px;width:100%}
-  .nav{
-    flex:0 0 auto;width:34px;height:34px;border-radius:50%;
-    background:var(--surface);border:1px solid #F2E1D2;color:var(--primary);
-    display:flex;align-items:center;justify-content:center;cursor:pointer;
-    box-shadow:var(--shadow-sm);transition:transform .12s ease;
-  }
-  .nav:active{transform:scale(.9)}
-  .nav svg{width:15px;height:15px}
-  .tiles{display:flex;align-items:center;justify-content:center;gap:8px;flex:1 1 auto}
-  .tile{
-    display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;
-    transition:transform .22s cubic-bezier(.22,1,.36,1),opacity .22s ease;
-    flex:0 0 auto;
-  }
-  .tile .disc{position:relative;border-radius:50%;overflow:hidden;background:#FFF2DE}
-  .tile .disc img{width:100%;height:100%;object-fit:cover;display:block}
-  .tile .t-name{font-size:10.5px;font-weight:600;color:var(--ink-2);letter-spacing:.2px}
+  /* ---------- band + reason lines (under the score) ---------- */
+  .scorelines{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;padding:2px 10px 0}
+  .band{font-family:'Playfair Display',Georgia,serif;font-size:16.5px;font-weight:600;color:var(--ink);line-height:1.35}
+  .reason{font-size:12.5px;font-weight:500;color:var(--ink-2)}
+  .reason .star{color:var(--gold);margin-right:3px}
 
-  .tile.side .disc{width:50px;height:50px;box-shadow:0 4px 12px rgba(180,120,60,.18)}
-  .tile.side{opacity:.85}
-  .tile.center .disc{
-    width:70px;height:70px;
-    box-shadow:0 0 0 3px var(--primary),0 0 0 5px #FDE3D2,0 8px 18px rgba(210,110,50,.30);
-  }
-  .tile.center{transform:translateY(-4px)}
-  .tile.center .t-name{color:var(--primary);font-weight:700;font-size:11.5px}
+  /* ---------- rashi pill trigger + hint ---------- */
+  .selector{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .sign-pill{display:inline-flex;align-items:center;gap:10px;border:1px solid #F2E1D2;background:var(--surface);border-radius:999px;padding:7px 13px 7px 8px;cursor:pointer;box-shadow:var(--shadow-sm);font-family:inherit;transition:transform .12s ease}
+  .sign-pill:active{transform:scale(.97)}
+  .sign-pill .disc{position:relative;width:38px;height:38px;border-radius:50%;overflow:hidden;background:#FFF2DE;flex:0 0 auto}
+  .sign-pill .disc img{width:100%;height:100%;object-fit:cover;display:block}
+  .sign-pill .sp-txt{display:flex;flex-direction:column;align-items:flex-start}
+  .sign-pill .sp-name{font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.15}
+  .sign-pill .sp-range{font-size:11px;font-weight:500;color:var(--ink-2);line-height:1.2}
+  .sign-pill .chev{color:var(--primary);flex:0 0 auto}
+  .pill-hint{font-size:12px;color:#B07A2E;font-weight:500}
 
   /* medallion placeholder inside disc */
   .med{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
@@ -138,9 +126,9 @@
   @keyframes breathe{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
   @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
 
-  .signname{text-align:center;margin-top:0}
-  .signname .nm{font-size:25px;font-weight:600;color:var(--ink);line-height:1.05}
-  .signname .rg{font-size:11.5px;font-weight:500;color:var(--ink-2);margin-top:2px;letter-spacing:.3px}
+  /* ---------- cross-fade on sign change ---------- */
+  .xfade{transition:opacity .2s ease}
+  .xfade.out{opacity:0}
 
   /* ---------- section title ---------- */
   .sec-title{display:flex;align-items:center;gap:8px;font-family:'Playfair Display',serif;
@@ -148,7 +136,7 @@
   .sec-title .ic{font-size:16px;line-height:1}
 
   /* ---------- reading + lucky (one widget) ---------- */
-  .reading{padding:16px 16px 14px}
+  .reading{padding:20px 16px 18px}
   .reading p.ov{font-size:13.5px;line-height:1.55;color:#5A4A40;font-weight:400;margin-top:9px}
   .divider{height:1px;background:var(--line);margin:14px 2px}
   .lucky{display:flex;gap:9px}
@@ -160,26 +148,50 @@
   .lu .dots i{width:15px;height:15px;border-radius:50%;display:inline-block;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
   .lu .lbl{font-size:9px;font-weight:600;color:var(--ink-2);letter-spacing:.5px;margin-top:6px}
 
-  /* ---------- guidance (blur-to-tease) ---------- */
-  .guide{padding:16px 18px 14px;cursor:pointer}
-  .guide-rows{display:flex;gap:10px;margin-top:12px}
-  .grow{flex:1 1 0;border-radius:14px;padding:10px 11px 9px;min-width:0}
-  .grow.doo{background:var(--good-bg);border:1px solid #D5EBDD}
-  .grow.avoid{background:var(--bad-bg);border:1px solid #F6D8DA}
-  .grow .gh{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700}
-  .grow.doo .gh{color:var(--good)}
-  .grow.avoid .gh{color:var(--bad)}
-  .grow .blur{margin-top:7px;font-size:12px;line-height:1.45;color:#5A4A40;
-    filter:blur(5px);user-select:none;-webkit-user-select:none;pointer-events:none;
-    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-  .unlock{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:12px;
-    font-size:12.5px;font-weight:600;color:#9A7A5E}
-  .unlock svg{width:14px;height:14px}
-  .hook{text-align:center;font-family:'Playfair Display',serif;font-size:14.5px;font-weight:600;font-style:italic;
-    color:var(--ink);line-height:1.4;margin-top:9px;padding:0 4px}
-  .chev-down{display:flex;justify-content:center;margin-top:8px;color:var(--primary);animation:bob 1.4s ease-in-out infinite}
-  .chev-down svg{width:26px;height:26px}
-  @keyframes bob{0%,100%{transform:translateY(0);opacity:.75}50%{transform:translateY(6px);opacity:1}}
+  /* ---------- things to look out for (curiosity card) ---------- */
+  .lookout{padding:20px 18px 20px;cursor:pointer}
+  .lo-lead{font-family:'Playfair Display',Georgia,serif;font-size:15px;font-weight:600;color:var(--ink);line-height:1.4;margin-top:12px}
+  .lo-list{list-style:none;margin-top:13px;display:flex;flex-direction:column;gap:10px}
+  .lo-point{display:flex;gap:10px;align-items:flex-start}
+  .lo-num{flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .lo-txt{font-size:13.5px;line-height:1.55;color:#4A382C;font-weight:500;flex:1 1 auto}
+  /* ---------- astrologer chat bubble (inside the look-out card) ---------- */
+  .astro-row{display:flex;align-items:center;margin-top:16px}
+  .astro-ava{position:relative;z-index:2;flex:0 0 auto;width:58px;height:58px;border-radius:50%;border:4px solid #FFFFFF;box-shadow:0 6px 16px rgba(196,132,74,.30);background:linear-gradient(135deg,#E2A76A,#BF7C3E);display:flex;align-items:flex-end;justify-content:center;margin-right:-14px}
+  .astro-ava svg{width:72%;height:72%;display:block}
+  .astro-ava .dot{position:absolute;right:1px;bottom:1px;width:13px;height:13px;border-radius:50%;background:#2E9E5B;border:2.5px solid #fff}
+  .bubble{flex:1 1 auto;background:var(--surface);border-radius:20px;padding:14px 16px 11px 24px;box-shadow:0 10px 24px rgba(196,132,74,.16)}
+  .b-txt{font-size:14.5px;font-weight:600;color:var(--ink);line-height:1.45}
+  .b-dots{display:flex;gap:5px;margin-top:8px}
+  .b-dots i{width:6px;height:6px;border-radius:50%;background:#D9C9BA;animation:typedot 1.3s ease-in-out infinite}
+  .b-dots i:nth-child(2){animation-delay:.16s}
+  .b-dots i:nth-child(3){animation-delay:.32s}
+  @keyframes typedot{0%,60%,100%{opacity:.35;transform:translateY(0)}30%{opacity:1;transform:translateY(-2px)}}
+  .astro-ready{text-align:center;font-size:12.5px;font-weight:600;color:#8C7263;margin-top:12px}
+  @keyframes breathe-cta{0%,100%{box-shadow:0 10px 26px rgba(238,108,58,.40)}50%{box-shadow:0 12px 34px rgba(238,108,58,.62)}}
+  @media (prefers-reduced-motion:reduce){
+    .b-dots i{animation:none}
+    .cta-btn{animation:none!important}
+  }
+
+  /* ---------- bottom sheet (choose your rashi) ---------- */
+  .scrim{position:fixed;inset:0;z-index:40;background:rgba(46,26,12,.45);opacity:0;pointer-events:none;transition:opacity .25s ease}
+  body.sheet-open .scrim{opacity:1;pointer-events:auto}
+  .sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-width:440px;margin:0 auto;background:var(--surface);border-radius:26px 26px 0 0;box-shadow:0 -12px 40px rgba(120,70,30,.28);transform:translateY(103%);transition:transform .3s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;max-height:72vh;max-height:72dvh;padding-top:10px}
+  body.sheet-open .sheet{transform:translateY(0)}
+  .sh-handle{width:44px;height:5px;border-radius:999px;background:#E8D5C2;margin:0 auto 10px;flex:0 0 auto}
+  .sh-title{font-family:'Playfair Display',Georgia,serif;font-size:19px;font-weight:600;color:var(--ink);text-align:center}
+  .sh-sub{font-size:12.5px;color:var(--ink-2);text-align:center;margin-top:3px;padding:0 26px}
+  .sh-list{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:9px;margin-top:6px}
+  .sh-row{display:flex;align-items:center;gap:12px;background:var(--cream);border:2px solid transparent;border-radius:16px;padding:9px 12px;cursor:pointer;flex:0 0 auto}
+  .sh-row .disc{position:relative;width:44px;height:44px;border-radius:50%;overflow:hidden;background:#FFF2DE;flex:0 0 auto}
+  .sh-row .disc img{width:100%;height:100%;object-fit:cover;display:block}
+  .sh-row .rw-txt{display:flex;flex-direction:column}
+  .sh-row .rw-name{font-size:14.5px;font-weight:600;color:var(--ink)}
+  .sh-row .rw-range{font-size:11.5px;font-weight:500;color:var(--ink-2);margin-top:1px}
+  .sh-row .rw-tick{margin-left:auto;width:22px;height:22px;border-radius:50%;background:var(--primary);display:none;align-items:center;justify-content:center;flex:0 0 auto}
+  .sh-row.active{border-color:var(--primary);background:#FFF4E8}
+  .sh-row.active .rw-tick{display:flex}
 
   /* ---------- sticky CTA ---------- */
   .cta-bar{position:fixed;left:0;right:0;bottom:0;z-index:30;
@@ -191,6 +203,7 @@
     border-radius:18px;padding:17px;font-family:inherit;font-size:17px;font-weight:700;letter-spacing:.3px;
     cursor:pointer;box-shadow:0 10px 26px rgba(238,108,58,.40);transition:transform .12s ease}
   .cta-btn:active{transform:scale(.985)}
+  .cta-btn{animation:breathe-cta 2.6s ease-in-out infinite}
   .cta-btn svg{width:21px;height:21px;flex:0 0 auto}
 
   /* ---------- fallback ---------- */
@@ -215,15 +228,15 @@
   .is-loading .skeltxt{color:transparent!important;border-radius:7px;min-height:.9em;background:linear-gradient(90deg,#EFDFCE 25%,#F8ECDD 37%,#EFDFCE 63%);background-size:480px 100%;animation:shimmer 1.15s infinite linear}
   .is-loading #scoreNum.skeltxt{min-width:66px;min-height:44px;border-radius:12px}
   .is-loading .ov.skeltxt{min-height:5.2em}
+  .is-loading .lo-txt.skeltxt{min-height:1.3em}
+  .is-loading .band.skeltxt{min-width:220px}
+  .is-loading .reason.skeltxt{min-width:170px}
   /* ---------- offline nudge pill ---------- */
   .offline-pill{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:86px;z-index:35;align-items:center;gap:10px;padding:9px 14px;border-radius:999px;background:#3A2A20;color:#FCEBD6;font:500 12.5px 'Poppins',sans-serif;box-shadow:0 8px 22px rgba(0,0,0,.22);max-width:88%}
   body.is-offline .offline-pill{display:inline-flex}
   .offline-pill button{border:none;cursor:pointer;background:#F1662B;color:#fff;border-radius:999px;padding:5px 12px;font:600 12px 'Poppins',sans-serif}
   /* ---------- retry on fallback ---------- */
   .fallback .retry{margin-top:8px;border:none;cursor:pointer;padding:12px 24px;border-radius:14px;font:600 14px 'Poppins',sans-serif;color:#fff;background:linear-gradient(90deg,#F1662B,#F5972A);box-shadow:0 8px 20px rgba(241,102,43,.3)}
-  /* ---------- swipe hint (no dob) ---------- */
-  .swipe-hint{display:none;font-size:12px;color:#B07A2E;margin-top:5px;font-weight:500}
-  body.no-dob .swipe-hint{display:block}
 </style>
 </head>
 <body>
@@ -261,59 +274,59 @@
       </div>
     </section>
 
-    <!-- ============ RASHI SELECTOR ============ -->
+    <!-- ============ BAND + REASON (why this score) ============ -->
+    <section class="scorelines xfade" id="scoreLines">
+      <div class="band skeltxt" id="bandText">&nbsp;</div>
+      <div class="reason skeltxt" id="reasonText">&nbsp;</div>
+    </section>
+
+    <!-- ============ RASHI PILL (opens the choose sheet) ============ -->
     <section class="selector">
-      <div class="strip">
-        <button class="nav" id="prevBtn" aria-label="Previous sign">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <div class="tiles" id="tiles"></div>
-        <button class="nav" id="nextBtn" aria-label="Next sign">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
-      <div class="signname">
-        <div class="nm serif skeltxt" id="rName">—</div>
-        <div class="rg skeltxt" id="rRange">—</div>
-        <div class="swipe-hint">👈 Not your sign? Swipe →</div>
-      </div>
+      <button class="sign-pill xfade" id="signPill" aria-haspopup="dialog">
+        <span class="disc" id="pillDisc"></span>
+        <span class="sp-txt">
+          <span class="sp-name skeltxt" id="pillName">&nbsp;</span>
+          <span class="sp-range skeltxt" id="pillRange">&nbsp;</span>
+        </span>
+        <svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="pill-hint">Not your Rashi? Tap to change</div>
     </section>
 
     <!-- ============ READING + LUCKY (one widget) ============ -->
-    <section class="bx reading pop" id="readingCard">
+    <section class="bx reading pop xfade" id="readingCard">
       <span class="cb tl"></span><span class="cb tr"></span><span class="cb bl"></span><span class="cb br"></span>
-      <div class="sec-title"><span class="ic">📖</span> Today's Reading</div>
-      <p class="ov skeltxt" id="overviewText">—</p>
+      <div class="sec-title"><span class="ic">📖</span> Today's Insight</div>
+      <p class="ov skeltxt" id="insightText">&nbsp;</p>
       <div class="divider"></div>
       <div class="lucky">
-        <div class="lu"><div class="v skeltxt" id="luNum">—</div><div class="lbl">LUCKY NUMBER</div></div>
-        <div class="lu"><div class="v time skeltxt" id="luTime">—</div><div class="lbl">LUCKY TIME</div></div>
+        <div class="lu"><div class="v skeltxt" id="luNum">&nbsp;</div><div class="lbl">LUCKY NUMBER</div></div>
+        <div class="lu"><div class="v time skeltxt" id="luTime">&nbsp;</div><div class="lbl">LUCKY TIME</div></div>
         <div class="lu"><div class="dots" id="luColors"></div><div class="lbl">LUCKY COLOURS</div></div>
       </div>
     </section>
 
-    <!-- ============ GUIDANCE (blur-to-tease) ============ -->
-    <section class="bx guide pop" id="guideCard">
+    <!-- ============ THINGS TO LOOK OUT FOR (curiosity card) ============ -->
+    <section class="bx lookout pop xfade" id="lookoutCard">
       <span class="cb tl"></span><span class="cb tr"></span><span class="cb bl"></span><span class="cb br"></span>
-      <div class="sec-title"><span class="ic">🔮</span> Today's Guidance</div>
-      <div class="hook skeltxt" id="hookText">—</div>
-      <div class="guide-rows">
-        <div class="grow doo">
-          <div class="gh">👍 What to do</div>
-          <div class="blur skeltxt" id="doText">—</div>
+      <div class="sec-title"><span class="ic">🔮</span> Things to look out for today</div>
+      <div class="lo-lead">Your stars are showing 3 things today.</div>
+      <ol class="lo-list" id="lookoutList">
+        <li class="lo-point"><span class="lo-num">1</span><span class="lo-txt skeltxt">&nbsp;</span></li>
+        <li class="lo-point"><span class="lo-num">2</span><span class="lo-txt skeltxt">&nbsp;</span></li>
+        <li class="lo-point"><span class="lo-num">3</span><span class="lo-txt skeltxt">&nbsp;</span></li>
+      </ol>
+      <div class="astro-row">
+        <span class="astro-ava" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8.6" r="3.7" fill="rgba(255,255,255,.92)"/><path d="M4.8 20 C5.8 15.6 8.8 13.9 12 13.9 C15.2 13.9 18.2 15.6 19.2 20 Z" fill="rgba(255,255,255,.92)"/></svg>
+          <span class="dot"></span>
+        </span>
+        <div class="bubble">
+          <div class="b-txt">These 3 signs are telling you something. Let me explain what.</div>
+          <div class="b-dots" aria-hidden="true"><i></i><i></i><i></i></div>
         </div>
-        <div class="grow avoid">
-          <div class="gh">👎 What to avoid</div>
-          <div class="blur skeltxt" id="avoidText">—</div>
-        </div>
       </div>
-      <div class="unlock">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M7 11V8a5 5 0 019.9-1M5 11h14v9H5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Talk to an astrologer to unlock today's guidance.
-      </div>
-      <div class="chev-down">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
+      <div class="astro-ready">An astrologer is ready to talk</div>
     </section>
 
   </main>
@@ -325,7 +338,7 @@
       <span class="wm">AstroLokal</span>
     </div>
     <h2 class="serif">See your Bhagya Score</h2>
-    <p>Log in with the AstroLokal app to unlock today's luck score and reading made just for you.</p>
+    <p>Log in with the AstroLokal app to see today's luck score and your reading, made just for you.</p>
     <button class="g-cta" id="gateBtn">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M10 17l5-5-5-5M15 12H3M13 4h6a2 2 0 012 2v12a2 2 0 01-2 2h-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span>Open AstroLokal app</span>
@@ -339,15 +352,24 @@
       <svg viewBox="0 0 100 100" width="34" height="34" aria-hidden="true"><g id="sunmark2"></g></svg>
       <span class="wm">AstroLokal</span>
     </div>
-    <h2 class="serif">Your Bhagya awaits</h2>
-    <p>Today's score couldn't load right now. An astrologer can tell you everything, instantly.</p>
+    <h2 class="serif">Your Bhagya Score is waiting</h2>
+    <p>Today's score could not load right now. Check your internet and try again.</p>
     <button class="retry" id="retryBtn">Try again</button>
   </div>
 
   <!-- ============ OFFLINE NUDGE ============ -->
   <div class="offline-pill" id="offlinePill">
-    <span>Showing saved reading — couldn't refresh.</span>
+    <span>Showing a saved reading. Could not refresh.</span>
     <button id="pillRetry">Retry</button>
+  </div>
+
+  <!-- ============ RASHI SHEET (choose your sign) ============ -->
+  <div class="scrim" id="sheetScrim"></div>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Choose your Rashi">
+    <div class="sh-handle"></div>
+    <div class="sh-title serif">Choose your Rashi</div>
+    <p class="sh-sub">Your Bhagya Score is calculated for your zodiac sign</p>
+    <div class="sh-list" id="sheetList"></div>
   </div>
 
   <!-- ============ STICKY CTA ============ -->
@@ -365,12 +387,12 @@
 
 <script>
 /* ============================================================================
-   CONFIG — external Supabase (YOUR project). Blank => embedded fallback renders.
+   CONFIG - external Supabase (YOUR project). Blank => embedded fallback renders.
 ============================================================================ */
 const API_BASE = "";  // same-origin: the Fastify backend serves this page and /api
 const DEEPLINK_SCHEME = "astrolokal://HomeScreen"; // opens the AstroLokal app home screen.
 
-/* Painted zodiac portraits — bundled static assets keyed by rashi (mesh->meen).
+/* Painted zodiac portraits - bundled static assets keyed by rashi (mesh->meen).
    Relative paths: keep the /assets folder next to this file when you deploy.
    If an image ever fails to load, the animated gold medallion renders instead. */
 const PORTRAITS = {
@@ -384,73 +406,115 @@ const PORTRAITS = {
 const params  = new URLSearchParams(location.search);
 const USER_ID = params.get("user_id") || "";
 
-const RASHI_ORDER = ["mesh","vrishabh","mithun","kark","simha","kanya","tula","vrishchik","dhanu","makar","kumbh","meen"];
-
 /* ---------------- Analytics: DISABLED (nothing is fired) ----------------
    trackEvent is intentionally a no-op. No network calls, no postMessage.
    To re-enable later, restore the fetch/postMessage body here. */
 function trackEvent(name, props){ /* no-op */ }
 
+/* ---------------- Rashi master data (order, names, date ranges) ----------
+   Names/ranges are page-owned; the daily payload only carries content. */
+const RASHI_ORDER = ["mesh","vrishabh","mithun","kark","simha","kanya","tula","vrishchik","dhanu","makar","kumbh","meen"];
+const RASHI_META = {
+  mesh:      {sign:"aries",       name:"Aries",       range:"21 Mar to 19 Apr"},
+  vrishabh:  {sign:"taurus",      name:"Taurus",      range:"20 Apr to 20 May"},
+  mithun:    {sign:"gemini",      name:"Gemini",      range:"21 May to 20 Jun"},
+  kark:      {sign:"cancer",      name:"Cancer",      range:"21 Jun to 22 Jul"},
+  simha:     {sign:"leo",         name:"Leo",         range:"23 Jul to 22 Aug"},
+  kanya:     {sign:"virgo",       name:"Virgo",       range:"23 Aug to 22 Sep"},
+  tula:      {sign:"libra",       name:"Libra",       range:"23 Sep to 22 Oct"},
+  vrishchik: {sign:"scorpio",     name:"Scorpio",     range:"23 Oct to 21 Nov"},
+  dhanu:     {sign:"sagittarius", name:"Sagittarius", range:"22 Nov to 21 Dec"},
+  makar:     {sign:"capricorn",   name:"Capricorn",   range:"22 Dec to 19 Jan"},
+  kumbh:     {sign:"aquarius",    name:"Aquarius",    range:"20 Jan to 18 Feb"},
+  meen:      {sign:"pisces",      name:"Pisces",      range:"19 Feb to 20 Mar"}
+};
+const SIGN_TO_KEY = {};
+RASHI_ORDER.forEach(k=>{ SIGN_TO_KEY[RASHI_META[k].sign] = k; });
+
 /* ============================================================================
-   EMBEDDED FALLBACK PAYLOAD — locked schema, 12 rashis mesh -> meen.
+   EMBEDDED FALLBACK PAYLOAD - the per-sign content schema the page consumes:
+   { sign, score(42-94), band(<=60), reason(<=60, one planet), insight(<=280),
+     signs[3] (each <=95, one specific thing, stops before the answer), lucky:{num,time,cols[3]} }
 ============================================================================ */
 const FALLBACK_PAYLOAD = {
-  date:"2026-07-13", lang:"en", timezone:"Asia/Kolkata",
+  date:"2026-07-20", lang:"en", timezone:"Asia/Kolkata",
   rashis:[
-    {key:"mesh",name:"Aries",date_range:"21 Mar – 19 Apr",score:78,
-     overview:"Today feels light and lucky for you. A worry that was sitting on your mind will slowly start to ease. Someone may bring good news by evening, and money matters stay steady. Just don't rush one decision — wait until you feel fully sure. Overall, the day moves in your favour.",
-     closing_hook:"A change is coming your way soon — an astrologer can tell you if it brings money, love or a fresh start.",
-     insights:{love:{percent:82,text:"Warmth flows easily. A small gesture today lands bigger than you expect."},career:{percent:66,text:"Steady progress. One conversation could nudge things in your favour."},money:{percent:38,text:"Hold back on a tempting spend — the timing isn't ripe just yet."},health:{percent:59,text:"Good stamina, but your rest is what will decide tomorrow."},travel:{percent:84,text:"A short trip or plan feels lucky and lifts your mood."}}},
-    {key:"vrishabh",name:"Taurus",date_range:"20 Apr – 20 May",score:64,
-     overview:"A calm and settled day is ahead of you. Work moves smoothly and your family stays supportive. This is a good time to plan your money slowly — what you save today will help you later. Your health stays fine if you rest well. Nothing to fear today; patience will bring what you want.",
-     closing_hook:"One delay in your plans is quietly saving you from a loss — an astrologer can tell you why to wait.",
-     insights:{love:{percent:71,text:"Comfort and trust grow. Someone values your steadiness more than they say."},career:{percent:58,text:"Keep your head down — quiet effort is being noticed above you."},money:{percent:44,text:"A small saving today protects a bigger plan later."},health:{percent:69,text:"Your body responds well to routine. Keep it simple."},travel:{percent:35,text:"Better to stay put; a delay may work out in your favour."}}},
-    {key:"mithun",name:"Gemini",date_range:"21 May – 20 Jun",score:71,
-     overview:"Today brings new talks, calls and small chances your way. A single conversation could open a door you did not expect. Your mind is sharp, so use it for important work. In money matters, think twice before you spend. By evening you will feel lighter and happier. A good day to connect with people.",
-     closing_hook:"One message coming your way will change something important — an astrologer can tell you what to watch for.",
-     insights:{love:{percent:76,text:"Playful energy draws people close. Say the thing you keep holding back."},career:{percent:63,text:"Ideas flow fast. Write them down before the day pulls you elsewhere."},money:{percent:52,text:"A choice appears — think twice before you commit the money."},health:{percent:48,text:"A restless mind needs rest. Slow your evening down."},travel:{percent:79,text:"Movement suits you. A change of scene brings a small stroke of luck."}}},
-    {key:"kark",name:"Cancer",date_range:"21 Jun – 22 Jul",score:55,
-     overview:"Your heart feels a little heavy today, but things are not as bad as they seem. Trust your feelings, they are guiding you correctly. Your home or family may need some attention. Avoid spending on things you do not really need. Rest early and stay calm — tomorrow will feel much lighter.",
-     closing_hook:"Someone close to you is hiding a worry — an astrologer can help you understand what it is.",
-     insights:{love:{percent:80,text:"A tender moment at home warms the whole day. Let your guard down a little."},career:{percent:47,text:"Not a day to push. Protect your energy and let the noise pass."},money:{percent:33,text:"Guard your wallet — an emotional spend is tempting but empty."},health:{percent:57,text:"Water, calm, early sleep. Your body is asking gently."},travel:{percent:62,text:"A familiar place brings comfort more than a new one."}}},
-    {key:"simha",name:"Leo",date_range:"23 Jul – 22 Aug",score:83,
-     overview:"Today your confidence shines and people around you notice it. A chance to move ahead in work or life is very near, so step forward without fear. Luck supports your bold choices today. Money and respect both look good. Stay humble and kind, and the day will reward you well.",
-     closing_hook:"A big opportunity is closer than you think — an astrologer can tell you the right time to grab it.",
-     insights:{love:{percent:85,text:"Attraction is strong. A bold, warm move is well-received today."},career:{percent:74,text:"Recognition is near. Step forward when the moment asks you to."},money:{percent:60,text:"A fair reward may come — don't undersell what you offer."},health:{percent:66,text:"High energy. Channel it, don't burn it all before noon."},travel:{percent:78,text:"A journey feels celebratory and lucky. Say yes."}}},
-    {key:"kanya",name:"Virgo",date_range:"23 Aug – 22 Sep",score:47,
-     overview:"Today asks you to slow down and handle small things with care. Finishing one pending task will bring you real peace. Do not worry — this is a quiet day, not a bad one. Check every detail before saying yes to any money matter. Your body needs rest, not stress. Take it easy and the day passes smoothly.",
-     closing_hook:"A small habit is quietly blocking your luck — an astrologer can show you how to break it.",
-     insights:{love:{percent:54,text:"Show care through the little details — it speaks louder than words today."},career:{percent:61,text:"Your eye for detail saves the day. Someone will owe you thanks."},money:{percent:36,text:"Double-check a number before you agree to anything."},health:{percent:58,text:"Ease the tension in your shoulders — you're carrying more than you think."},travel:{percent:42,text:"Plan now, travel later. Groundwork beats rushing."}}},
-    {key:"tula",name:"Libra",date_range:"23 Sep – 22 Oct",score:69,
-     overview:"Balance slowly returns to your life today. A decision that felt heavy will start to become clear. The right people are near to support you, so do not hesitate to ask. In money, the middle path is the safest today. Your relationships feel warmer. A fair and peaceful day is ahead — trust it.",
-     closing_hook:"A choice is coming that will shape your next few months — an astrologer can tell you which way to lean.",
-     insights:{love:{percent:81,text:"Harmony grows. A gentle honest talk brings you closer."},career:{percent:64,text:"You're the peacemaker today — and it quietly raises your standing."},money:{percent:50,text:"Weigh both sides before a purchase. The middle path pays."},health:{percent:55,text:"Small daily balance beats one big effort. Keep it even."},travel:{percent:73,text:"A trip with company feels especially fortunate."}}},
-    {key:"vrishchik",name:"Scorpio",date_range:"23 Oct – 21 Nov",score:60,
-     overview:"Today you can see what others around you cannot. Your gut feeling is strong and mostly correct, so trust it. Keep your plans private for now. Avoid taking money risks today; patience keeps you safe. An old matter may finally start to make sense. Move slowly and you stay one step ahead.",
-     closing_hook:"There is a person whose intention toward you is not what it seems — an astrologer can reveal who.",
-     insights:{love:{percent:77,text:"Deep connection is possible. Vulnerability, not control, opens the door."},career:{percent:59,text:"You see what others miss. Use it wisely, not loudly."},money:{percent:39,text:"Avoid a risky bet — patience protects you now."},health:{percent:64,text:"Release the tension you've been holding. Move your body."},travel:{percent:52,text:"A quiet escape restores you more than a busy one."}}},
-    {key:"dhanu",name:"Sagittarius",date_range:"22 Nov – 21 Dec",score:74,
-     overview:"Luck leans in your favour today, so aim a little higher than usual. A trip or a new plan may bring good news your way. Your positive nature attracts the right chances. Money looks better than the last few days. Stay honest and open, and more doors keep opening. A cheerful, forward-moving day awaits.",
-     closing_hook:"A new path ahead will bring a turning point — an astrologer can tell you when it truly begins.",
-     insights:{love:{percent:72,text:"Honesty and humour win hearts. Keep it light and true."},career:{percent:68,text:"A bold idea gets a green light. Pitch it with confidence."},money:{percent:45,text:"A gain is possible, but don't chase it too fast."},health:{percent:70,text:"Great day to move — your body craves the outdoors."},travel:{percent:88,text:"Travel is strongly favoured. A trip could turn memorable."}}},
-    {key:"makar",name:"Capricorn",date_range:"22 Dec – 19 Jan",score:52,
-     overview:"Today rewards your patience and hard work. A long effort is quietly moving closer to success, so do not give up now. Money grows slowly but safely — plan for the long term. Avoid overworking; one proper break will help you. Nothing bad today, just keep going steadily. Your discipline is being noticed.",
-     closing_hook:"Your patience is about to pay off in a way you do not expect — an astrologer can tell you where.",
-     insights:{love:{percent:56,text:"Show up consistently; reliability is your love language today."},career:{percent:71,text:"Your persistence gets noticed by the right person. Stay the course."},money:{percent:49,text:"A careful plan beats a quick win. Think long-term."},health:{percent:53,text:"Don't overwork. One real break refills your tank."},travel:{percent:37,text:"Postpone the long trip; the timing improves soon."}}},
-    {key:"kumbh",name:"Aquarius",date_range:"20 Jan – 18 Feb",score:66,
-     overview:"A fresh idea comes to you today, and it is truly your own. Share it with someone who understands you and it will grow. Your different way of thinking is a real gift today. In money, study any new chance before jumping in. A light and creative day is ahead — stay open and good things will find you.",
-     closing_hook:"A new opportunity is coming that looks unusual but is lucky — an astrologer can tell you if it is right for you.",
-     insights:{love:{percent:63,text:"Connection through ideas. A friend may feel like more today."},career:{percent:69,text:"Your different angle is exactly what's needed. Speak up."},money:{percent:47,text:"An unusual opportunity appears — study it before you leap."},health:{percent:60,text:"Your mind races; ground it with fresh air and water."},travel:{percent:75,text:"An unplanned trip brings an unexpected bit of luck."}}},
-    {key:"meen",name:"Pisces",date_range:"19 Feb – 20 Mar",score:80,
-     overview:"Today your inner feeling is very strong and points you the right way. Trust it, and let kindness lead your choices. A warm, happy moment at home or in love is likely. Your money stays steady if you keep clear limits. Rest and water will refresh you quickly. A gentle, lucky day full of good feeling is ahead.",
-     closing_hook:"Your heart already knows a truth your mind is avoiding — an astrologer can help you see it clearly.",
-     insights:{love:{percent:86,text:"Deep, dreamy warmth. A heartfelt moment feels almost meant to be."},career:{percent:57,text:"Creativity flows; let it out before the day gets busy."},money:{percent:41,text:"Keep clear boundaries with money — don't give more than you can."},health:{percent:62,text:"Rest and water restore you fast. Honour the slower pace."},travel:{percent:83,text:"A trip near water feels soothing and lucky today."}}}
+    {sign:"aries", score:72,
+     band:"An old problem finally starts to clear",
+     reason:"Mars is working with you, not against you",
+     insight:"The stars favour finishing old work today, not starting new. A problem that has followed you for days will loosen by evening. Money choices are better paused this week, because Mercury is moving slow. Keep the evening for family, one talk there will settle your mind.",
+     signs:["One problem that kept returning is ready to close, sooner than you expect.","A money step this week has a wrong time and a right time.","Someone at home is waiting for more of your evening."],
+     lucky:{num:9, time:"7:15 AM", cols:["#F1662B","#F5B71D","#2E9E5B"]}},
+    {sign:"taurus", score:61,
+     band:"A slow day that protects you",
+     reason:"Venus asks you to review, not rush",
+     insight:"Today is built for going over things, not starting them. An old task you know well will go smoother than anything new. Watch your spending today, a careful look will show you one leak. A call from someone far away can lift your whole day.",
+     signs:["A person far from you is about to reach out with something good.","One regular expense is quietly taking more than it should.","A new plan can wait, and waiting will actually help it."],
+     lucky:{num:6, time:"6:40 PM", cols:["#2E9E5B","#8FD3B6","#F5B71D"]}},
+    {sign:"gemini", score:56,
+     band:"A day to fix, not to start",
+     reason:"Mercury, your planet, is moving slow this week",
+     insight:"Mercury rules your sign, and it is moving slow till the 24th. So old plans need a second look before they move ahead. One small decision today quietly pushes a big goal forward. An old friend or contact is worth reconnecting with now. Do not force results, let them come.",
+     signs:["One small choice today is connected to a much bigger goal.","An old contact is thinking about you more than you know.","A plan you are pushing hard needs one correction first."],
+     lucky:{num:5, time:"11:20 AM", cols:["#F5A524","#7EC8E3","#F1662B"]}},
+    {sign:"cancer", score:84,
+     band:"Your work is getting noticed today",
+     reason:"Jupiter is sitting strong in your sign",
+     insight:"Jupiter is strong in your sign right now, and it shows. Senior people are watching your work with a good eye today. An unfinished plan from before deserves a fresh look, it can move now. Keep office worries at the office, home will feel light tonight.",
+     signs:["A senior person has already noticed you, the result comes soon.","One old plan you dropped is worth picking up this week.","A good change at work is closer than it appears."],
+     lucky:{num:2, time:"9:00 PM", cols:["#C9D6FF","#F5B71D","#E5A0C8"]}},
+    {sign:"leo", score:68,
+     band:"New learning opens a door today",
+     reason:"The Sun pushes you to grow today",
+     insight:"Today pulls you out of routine, and that is a good thing. A teacher or senior will say one line that stays with you. Papers and forms need a second read this week, so go slow there. A short trip or a new course is better than it first looks.",
+     signs:["One piece of advice today is worth more than it sounds.","A paper or form is hiding one detail you should read twice.","A chance to learn something new has good timing right now."],
+     lucky:{num:1, time:"12:30 PM", cols:["#F1662B","#F5B71D","#E5484D"]}},
+    {sign:"virgo", score:88,
+     band:"One of your best days this month",
+     reason:"The Moon is sitting in your sign today",
+     insight:"The Moon spends today in your sign, a strong sign of luck. Money matters you kept postponing will open easily now. A difficult talk becomes clear if you have it today. Trust your own judgement, it is sharper than usual. Let one old worry go tonight.",
+     signs:["A money matter you postponed is finally ready to move.","One difficult talk will go your way if it happens today.","Your judgement is stronger today, one choice will prove it."],
+     lucky:{num:5, time:"8:10 AM", cols:["#8FD3B6","#F0D9A8","#B8A99D"]}},
+    {sign:"libra", score:63,
+     band:"A quiet day that clears your head",
+     reason:"Venus turns your mind toward balance",
+     insight:"The day favours quiet over noise for you. Answers you were chasing will come when you sit still. One plan grows stronger if you simply review it today. Hold your wallet close, an impulse buy will tempt you by evening.",
+     signs:["The answer you are looking for arrives in a quiet moment.","One plan needs review, not speed, and it will reward you.","An evening temptation to spend is not worth it this time."],
+     lucky:{num:6, time:"5:45 PM", cols:["#E5A0C8","#C9D6FF","#F5B71D"]}},
+    {sign:"scorpio", score:76,
+     band:"One conversation changes your day",
+     reason:"Mars connects you to the right people",
+     insight:"An unexpected talk today carries a real direction for you. The right person is closer than you think, so share your idea. Work you build with others moves twice as fast now. Keep your focus on what already exists, not on new starts.",
+     signs:["A person you did not plan to meet has something you need.","Your idea grows the moment you say it out loud to the right one.","Help you did not ask for is on its way to you."],
+     lucky:{num:9, time:"10:15 PM", cols:["#8A2846","#E5484D","#F5B71D"]}},
+    {sign:"sagittarius", score:58,
+     band:"Quiet effort today, reward later",
+     reason:"Jupiter asks for patience from you today",
+     insight:"Today tests how steady you are, not how fast. Your work is being counted, even if nobody says it yet. The praise you deserve is coming, just not today. One trusted friend can show you what you are missing.",
+     signs:["Someone is keeping track of your effort without telling you.","A reward for old work is delayed, not cancelled.","One friend sees your situation clearer than you do right now."],
+     lucky:{num:3, time:"4:20 PM", cols:["#F1662B","#7EC8E3","#F5B71D"]}},
+    {sign:"capricorn", score:79,
+     band:"A strong day for your next step",
+     reason:"Saturn steadies every step you take today",
+     insight:"The stars back careful planning today. Collect full information before you sign or send anything this week. Someone close will drop advice that turns out unexpectedly useful. One firm step today makes your position stronger for the month.",
+     signs:["Advice from someone near you is worth more than it sounds.","One paper or payment needs full checking before it moves.","A single step this week can secure your whole month."],
+     lucky:{num:8, time:"7:50 AM", cols:["#5A4A40","#B8A99D","#2E9E5B"]}},
+    {sign:"aquarius", score:50,
+     band:"A careful day, choose words slowly",
+     reason:"Saturn is testing your patience today",
+     insight:"Today asks for soft words and open talk. A misunderstanding near you clears the moment you speak honestly. Money that is shared, in family or work, needs a clear conversation. Go slow, your patience today quietly becomes your strength.",
+     signs:["One misunderstanding is waiting for a single honest sentence.","A shared money matter needs daylight before it grows.","Words said in a hurry today can cost more than they seem."],
+     lucky:{num:11, time:"9:30 AM", cols:["#7EC8E3","#C9D6FF","#F5B71D"]}},
+    {sign:"pisces", score:71,
+     band:"Small moments carry big warmth today",
+     reason:"The Moon turns your eyes to people you love",
+     insight:"The day belongs to your people, not your tasks. One honest talk will bring someone closer than before. Work moves slowly, and that is normal today, do not read it wrong. Keep the evening for something creative or someone dear.",
+     signs:["One honest sentence can repair more than you expect.","A slow day at work is not a sign of trouble, it only looks like one.","Your evening holds a warm moment if you keep it free."],
+     lucky:{num:7, time:"6:15 AM", cols:["#7EC8E3","#8FD3B6","#E5A0C8"]}}
   ]
 };
 
-/* ============================================================================
-   DERIVED (schema untouched): lucky values + teaser guidance, deterministic/sign.
-============================================================================ */
+/* Lucky defaults per sign - used only if a payload row arrives without lucky. */
 const LUCKY_NUM   = {mesh:9,vrishabh:6,mithun:5,kark:2,simha:1,kanya:5,tula:6,vrishchik:9,dhanu:3,makar:8,kumbh:11,meen:7};
 const LUCKY_TIME  = {mesh:"7:15 AM",vrishabh:"6:40 PM",mithun:"11:20 AM",kark:"9:00 PM",simha:"12:30 PM",kanya:"8:10 AM",tula:"5:45 PM",vrishchik:"10:15 PM",dhanu:"4:20 PM",makar:"7:50 AM",kumbh:"9:30 AM",meen:"6:15 AM"};
 const LUCKY_COLS  = {
@@ -461,43 +525,9 @@ const LUCKY_COLS  = {
   dhanu:["#F1662B","#7EC8E3","#F5B71D"], makar:["#5A4A40","#B8A99D","#2E9E5B"],
   kumbh:["#7EC8E3","#C9D6FF","#F5B71D"], meen:["#7EC8E3","#8FD3B6","#E5A0C8"]
 };
-function getLucky(r){
-  const k = r.key;
-  return (r.lucky) ? r.lucky : { number:LUCKY_NUM[k], time:LUCKY_TIME[k], colors:LUCKY_COLS[k] };
-}
-/* Teaser guidance is intentionally blurred; kept generic + realistic. */
-const DO_POOL = [
-  "Start the task you've been circling — momentum favours you before noon.",
-  "Reach out to the one person who's been on your mind; the timing is right.",
-  "Say yes to a small opportunity that feels a little outside your comfort zone.",
-  "Settle a pending matter early so the rest of your day stays light."
-];
-const AVOID_POOL = [
-  "Don't sign or commit to anything financial without a second look.",
-  "Avoid an argument that isn't yours to win — step back instead.",
-  "Skip the impulsive decision after 4 PM; sleep on it tonight.",
-  "Hold off on sharing a private plan too soon with the wrong crowd."
-];
-/* Curiosity-gap hooks — name a specific truth, leave the answer for the astrologer. */
-const HOOK_POOL = [
-  "There is a person in your life whose intention toward you is not what it seems — an astrologer can reveal who.",
-  "A decision you're about to make carries a hidden turn — an astrologer can tell you which way to lean.",
-  "Something you've been waiting for is closer than you think — an astrologer can tell you exactly when.",
-  "One relationship is quietly shaping your luck right now — an astrologer can name it.",
-  "There's a small mistake you keep repeating — an astrologer can show you how to break it.",
-  "A door is opening this month that you haven't noticed yet — an astrologer can point you to it."
-];
-function getGuidance(r,idx){
-  if(r.guidance) return r.guidance;
-  return {
-    do:    DO_POOL[idx % DO_POOL.length],
-    avoid: AVOID_POOL[idx % AVOID_POOL.length],
-    hook:  r.closing_hook || HOOK_POOL[idx % HOOK_POOL.length]
-  };
-}
 
 /* ============================================================================
-   MEDALLIONS — gold line-art placeholders (used until PORTRAITS are supplied).
+   MEDALLIONS - gold line-art placeholders (used until PORTRAITS are supplied).
 ============================================================================ */
 const SS = 'stroke="var(--gold)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" fill="none"';
 const dot = (x,y)=>`<circle cx="${x}" cy="${y}" r="2" fill="var(--gold)" stroke="none"/>`;
@@ -521,7 +551,7 @@ const STARFIELD = (()=>{
   return `<svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="50" r="46" fill="none" stroke="var(--gold)" stroke-width="1" stroke-dasharray="1 6" opacity=".4"/>${stars}</svg>`;
 })();
 
-/* AstroLokal sun mark — inline SVG recreation of the attached logo. */
+/* AstroLokal sun mark - inline SVG recreation of the logo. */
 function buildSunMark(target){
   const petal = 'M50 5 C41 20 42 31 50 39 C58 31 59 20 50 5 Z';
   let petals = "";
@@ -551,45 +581,41 @@ function portraitInner(r){
   return medHtml(r);
 }
 
-function renderStrip(){
-  const n = STATE.rashis.length;
-  const cur = STATE.idx;
-  const order = [ (cur-1+n)%n, cur, (cur+1)%n ];
-  const roles = ["side","center","side"];
-  const wrap = document.getElementById("tiles");
-  wrap.innerHTML = "";
-  order.forEach((ri,pos)=>{
-    const r = STATE.rashis[ri];
-    const t = document.createElement("div");
-    t.className = "tile " + roles[pos];
-    t.innerHTML = '<div class="disc">'+portraitInner(r)+'</div><div class="t-name">'+escapeHtml(r.name)+'</div>';
-    const img = t.querySelector('img');
-    if(img) img.onerror = ()=>{ img.closest('.disc').innerHTML = medHtml(r); };
-    if(pos===0) t.addEventListener("click", ()=>goTo(cur-1,true));
-    if(pos===2) t.addEventListener("click", ()=>goTo(cur+1,true));
-    wrap.appendChild(t);
-  });
+function renderScoreLines(r){
+  document.getElementById("bandText").textContent = r.band || "";
+  const re = document.getElementById("reasonText");
+  re.innerHTML = r.reason ? '<span class="star">✦</span> ' + escapeHtml(r.reason) : "";
 }
-
-const INSIGHT = null; // (insights retained in payload; surfaced via score+overview here)
-
-function renderReadingLucky(r){
-  document.getElementById("overviewText").textContent = r.overview || "";
-  const lk = getLucky(r);
-  document.getElementById("luNum").textContent = lk.number;
-  document.getElementById("luTime").textContent = lk.time;
+function renderPill(r){
+  const disc = document.getElementById("pillDisc");
+  disc.innerHTML = portraitInner(r);
+  const img = disc.querySelector("img");
+  if(img) img.onerror = ()=>{ disc.innerHTML = medHtml(r); };
+  document.getElementById("pillName").textContent  = r.name || r.key;
+  document.getElementById("pillRange").textContent = r.date_range || "";
+}
+function renderInsight(r){
+  document.getElementById("insightText").textContent = r.insight || "";
+  const lk = r.lucky || {};
+  document.getElementById("luNum").textContent  = (lk.num != null ? lk.num : "");
+  document.getElementById("luTime").textContent = lk.time || "";
   const cw = document.getElementById("luColors");
   cw.innerHTML = "";
-  (lk.colors||[]).slice(0,3).forEach(hex=>{
+  (lk.cols||[]).slice(0,3).forEach(hex=>{
     const i = document.createElement("i"); i.style.background = hex; cw.appendChild(i);
   });
 }
-
-function renderGuidance(r,idx){
-  const g = getGuidance(r,idx);
-  document.getElementById("doText").textContent = g.do;
-  document.getElementById("avoidText").textContent = g.avoid;
-  document.getElementById("hookText").textContent = g.hook;
+function renderLookout(r){
+  const list = document.getElementById("lookoutList");
+  list.innerHTML = "";
+  (r.signs || []).slice(0,3).forEach((txt, i)=>{
+    const li = document.createElement("li");
+    li.className = "lo-point";
+    li.innerHTML = '<span class="lo-num">' + (i+1) + '</span><span class="lo-txt"></span>';
+    li.querySelector(".lo-txt").textContent = txt;
+    list.appendChild(li);
+  });
+  document.getElementById("lookoutCard").style.display = (r.signs && r.signs.length) ? "" : "none";
 }
 
 function animateScore(target){
@@ -609,11 +635,10 @@ function animateScore(target){
 function render(animateNum){
   const r = STATE.rashis[STATE.idx];
   if(!r) return;
-  renderStrip();
-  document.getElementById("rName").textContent  = r.name || r.key;
-  document.getElementById("rRange").textContent = r.date_range || "";
-  renderReadingLucky(r);
-  renderGuidance(r, STATE.idx);
+  renderScoreLines(r);
+  renderPill(r);
+  renderInsight(r);
+  renderLookout(r);
   const score = Math.max(0,Math.min(100, r.score|0));
   if(animateNum){ animateScore(score); }
   else {
@@ -624,28 +649,68 @@ function render(animateNum){
   document.querySelectorAll(".pop").forEach(el=>{el.style.animation="none";void el.offsetWidth;el.style.animation="";});
 }
 
-function goTo(newIdx, viaToggle){
+/* ============================================================================
+   BOTTOM SHEET - choose your rashi (no scores in the list, by design)
+============================================================================ */
+/* Sheet rows are sorted by date of birth (calendar order, Jan -> Dec). */
+const SHEET_ORDER = ["kumbh","meen","mesh","vrishabh","mithun","kark","simha","kanya","tula","vrishchik","dhanu","makar"];
+function buildSheet(){
+  const list = document.getElementById("sheetList");
+  list.innerHTML = "";
+  SHEET_ORDER.forEach(k=>{
+    const i = STATE.rashis.findIndex(x=>x.key===k);
+    if(i < 0) return;
+    const r = STATE.rashis[i];
+    const row = document.createElement("div");
+    row.className = "sh-row" + (i===STATE.idx ? " active" : "");
+    row.setAttribute("role","button");
+    row.innerHTML =
+      '<span class="disc">'+portraitInner(r)+'</span>' +
+      '<span class="rw-txt"><span class="rw-name">'+escapeHtml(r.name)+'</span><span class="rw-range">'+escapeHtml(r.date_range)+'</span></span>' +
+      '<span class="rw-tick"><svg viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 12l5 5 9-10" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+    const img = row.querySelector("img");
+    if(img) img.onerror = ()=>{ row.querySelector(".disc").innerHTML = medHtml(r); };
+    row.addEventListener("click", ()=>selectSign(i));
+    list.appendChild(row);
+  });
+}
+function openSheet(){
+  buildSheet();
+  document.body.classList.add("sheet-open");
+  trackEvent("sheet_open", {});
+}
+function closeSheet(){ document.body.classList.remove("sheet-open"); }
+
+const FADE_IDS = ["scoreLines","signPill","readingCard","lookoutCard"];
+function selectSign(i){
+  closeSheet();
+  if(i === STATE.idx) return;
   const from = STATE.rashis[STATE.idx] && STATE.rashis[STATE.idx].key;
-  STATE.idx = (newIdx + STATE.rashis.length) % STATE.rashis.length;
-  const to = STATE.rashis[STATE.idx].key;
-  render(true);
-  if(viaToggle) trackEvent("rashi_toggled", { from, to });
+  FADE_IDS.forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add("out"); });
+  setTimeout(()=>{
+    STATE.idx = i;
+    render(true);
+    FADE_IDS.forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.remove("out"); });
+    trackEvent("rashi_selected", { from, to:STATE.rashis[i].key });
+  }, 200);
 }
 
 /* ============================================================================
    DATA LOAD
 ============================================================================ */
-function istToday(){
-  return new Intl.DateTimeFormat("en-CA",{ timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit" }).format(new Date());
+function contentDateIST(){
+  // The content day flips at 6:00 AM IST, not midnight. Before 6 AM the page
+  // still asks for (and the API serves) the previous day's content.
+  return new Intl.DateTimeFormat("en-CA",{ timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit" })
+    .format(new Date(Date.now() - 6*60*60*1000));
 }
 async function fetchPayload(){
   // Read today's content from the backend (same origin). On any failure (incl. a
   // 6s timeout) the caller falls back to the embedded FALLBACK_PAYLOAD.
-  const today = istToday();
   const ctrl = new AbortController();
   const timer = setTimeout(()=>ctrl.abort(), 6000);
   try{
-    const res = await fetch(API_BASE + "/api/daily-content?lang=en&date=" + today, { headers:{ "Accept":"application/json" }, signal:ctrl.signal });
+    const res = await fetch(API_BASE + "/api/daily-content?lang=en&date=" + contentDateIST(), { headers:{ "Accept":"application/json" }, signal:ctrl.signal });
     if(!res.ok) throw new Error("status-" + res.status);
     const data = await res.json();
     if(!data || !data.rashis) throw new Error("empty");
@@ -653,9 +718,29 @@ async function fetchPayload(){
   } finally { clearTimeout(timer); }
 }
 function normalise(payload){
-  const byKey={}; (payload.rashis||[]).forEach(r=>{ if(r&&r.key) byKey[r.key]=r; });
-  const ordered = RASHI_ORDER.map(k=>byKey[k]).filter(Boolean);
-  return ordered.length===12 ? ordered : (payload.rashis||[]);
+  // Accepts new-schema rows ({sign, band, reason, insight, finding, open, lucky})
+  // and maps older rows ({key, overview, closing_hook}) onto the same shape.
+  const byKey = {};
+  (payload.rashis||[]).forEach(r=>{
+    if(!r) return;
+    const key = r.key || SIGN_TO_KEY[String(r.sign||"").toLowerCase()];
+    if(!key || !RASHI_META[key]) return;
+    const meta = RASHI_META[key], l = r.lucky || {};
+    byKey[key] = {
+      key, name:meta.name, date_range:meta.range,
+      score:   r.score|0,
+      band:    r.band || "",
+      reason:  r.reason || "",
+      insight: r.insight || r.overview || "",
+      signs:   Array.isArray(r.signs) ? r.signs.map(String).slice(0,3) : [],
+      lucky: {
+        num:  (l.num != null ? l.num : (l.number != null ? l.number : LUCKY_NUM[key])),
+        time: l.time || LUCKY_TIME[key],
+        cols: l.cols || l.colors || LUCKY_COLS[key]
+      }
+    };
+  });
+  return RASHI_ORDER.map(k=>byKey[k]).filter(Boolean);
 }
 function showFallbackScreen(){
   document.getElementById("scroll").style.display="none";
@@ -689,10 +774,7 @@ async function boot(){
   // 1) No user_id -> require login with the AstroLokal app (bypass with ?preview=1).
   if(!USER_ID && !PREVIEW){ showGate(); return; }
 
-  // 2) Everyone lands on the default sign and swipes to theirs (no dob param).
-  document.body.classList.add("no-dob");
-
-  // 3) Fetch with a shimmer while we wait.
+  // 2) Fetch with a shimmer while we wait.
   const scroll = document.getElementById("scroll");
   scroll.classList.add("is-loading");
   let payload, usedFallback=false;
@@ -702,7 +784,7 @@ async function boot(){
   try{
     STATE.rashis = normalise(payload);
     if(!STATE.rashis.length) throw new Error("empty");
-    STATE.idx = 0;                          // always land on the default sign (user swipes to theirs)
+    STATE.idx = 0;                          // everyone lands on the default sign, then taps the pill
     scroll.classList.remove("is-loading");
     render(true);
     if(usedFallback){
@@ -727,10 +809,11 @@ function fireCta(){
   window.location.href = DEEPLINK_SCHEME +
     "?source=bhagya_score&user_id=" + encodeURIComponent(USER_ID) + "&rashi=" + encodeURIComponent(rashi);
 }
-document.getElementById("prevBtn").addEventListener("click", ()=>goTo(STATE.idx-1,true));
-document.getElementById("nextBtn").addEventListener("click", ()=>goTo(STATE.idx+1,true));
+document.getElementById("signPill").addEventListener("click", openSheet);
+document.getElementById("sheetScrim").addEventListener("click", closeSheet);
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeSheet(); });
 document.getElementById("ctaBtn").addEventListener("click", fireCta);
-document.getElementById("guideCard").addEventListener("click", fireCta); // guidance card taps through to CTA
+document.getElementById("lookoutCard").addEventListener("click", fireCta); // look-out card taps through to CTA
 var _g=document.getElementById("gateBtn");  if(_g) _g.addEventListener("click", openApp);
 var _r=document.getElementById("retryBtn"); if(_r) _r.addEventListener("click", retry);
 var _p=document.getElementById("pillRetry");if(_p) _p.addEventListener("click", retry);

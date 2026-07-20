@@ -12,8 +12,8 @@ data:
   SHUTDOWN_TIMEOUT_MS: "15000"
   # Nightly Gemini generation (used by cronjob.yaml, and by the app if you enable the in-process scheduler)
   CONTENT_RUN_HOUR_IST: "1"
-  CONTENT_GENERATE_OFFSET_DAYS: "1"
+  CONTENT_GENERATE_OFFSET_DAYS: "0"
   CONTENT_LANGS: "en"
   GEMINI_MODEL: "gemini-2.0-flash"
   # Set to "true" to let the app pods self-run the nightly job instead of using the CronJob.
-  CONTENT_SCHEDULER_ENABLED: "false"
+  CONTENT_SCHEDULER_ENABLED: "true"
