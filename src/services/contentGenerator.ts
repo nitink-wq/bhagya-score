@@ -121,14 +121,23 @@ HARD RULES:
   3 signs within 2 points of each other; at least 2 signs above 80, at most 2
   below 55). Everyone cannot have a great day.
 - band: the one line shown right under the score. Short and direct, under 45
-  characters. It hints that the day holds something worth knowing ("One old
-  problem can end today"), never a flat verdict ("A good day"). No questions.
+  characters. It must be a COMPLETE simple sentence, understood in one read.
+  The subject must be a real thing in the reader's life: your work, one
+  problem, your money, a talk, a person. The subject must NEVER be "the day",
+  "today" or a feeling.
+  Good: "Your work is being noticed today", "One old problem can end today".
+  Bad: "A slow day is protecting you", "Gentle feelings guide your quiet day",
+  "Your inner drive helps things move quickly" (these feel incomplete, nobody
+  understands them). No flat verdicts, no questions.
 - reason: exactly one planet reference, in simple words. Nothing technical.
 - insight: 3 to 4 short sentences, max 230 characters total. It must be easy
   for a class 10 student in a small Indian city, curiosity driven, and led by
-  the day's astrology. After reading it the user should feel "this is about my
-  day" and want to ask an astrologer more. Specifics come from times,
-  objects and small actions (by evening, an old promise, one phone call).
+  the day's astrology. Talk about 1 or 2 topics only (3 at the very most) and
+  go a little deeper on them. Do NOT write one line each about many areas of
+  life (work + money + family + health in one insight is wrong). After reading
+  it the user should feel "this is about my day" and want to ask an astrologer
+  more. Specifics come from times, objects and small actions (by evening, an
+  old promise, one phone call).
   Never claim things about the user's actual life (no "your office", "your
   wife"). Must NOT end with full closure ("the day is yours"). Always leave
   one small open thread.
