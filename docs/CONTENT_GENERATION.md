@@ -54,7 +54,7 @@ The two things it needs from outside are just (1) a Postgres database and (2) th
 | Env | Default | Meaning |
 |---|---|---|
 | `GEMINI_API_KEY` | — | Required for generation. The web server boots without it. |
-| `GEMINI_MODEL` | `gemini-2.0-flash` | Change model without touching code. |
+| `GEMINI_MODEL` | `gemini-2.5-flash` | Change model without touching code. |
 | `CONTENT_SCHEDULER_ENABLED` | `true` | Nightly scheduler is ON by default; set `false` only if you run the separate CronJob instead. |
 | `CONTENT_RUN_HOUR_IST` | `1` | Hour (IST) to run. |
 | `CONTENT_GENERATE_OFFSET_DAYS` | `0` | `0` = the 01:00 IST run generates the same calendar day; it goes live at the 6 AM cutover. |

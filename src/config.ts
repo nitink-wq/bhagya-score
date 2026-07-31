@@ -83,7 +83,7 @@ export const config: AppConfig = {
 
   gemini: {
     apiKey: process.env.GEMINI_API_KEY ?? '',
-    model: process.env.GEMINI_MODEL ?? 'gemini-2.0-flash',
+    model: process.env.GEMINI_MODEL ?? 'gemini-2.5-flash',
     apiBase: process.env.GEMINI_API_BASE ?? 'https://generativelanguage.googleapis.com/v1beta',
     timeoutMs: int('GEMINI_TIMEOUT_MS', 60_000),
   },

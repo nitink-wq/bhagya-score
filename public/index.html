@@ -6,7 +6,7 @@
 <title>Bhagya Score · AstroLokal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Lora:wght@500;600;700&display=swap" rel="stylesheet">
 
 <!--
 ==================================================================================
@@ -35,17 +35,19 @@
 
 <style>
   :root{
-    --bg-top:#FCEFE3; --bg-bot:#FBE4D2;
-    --primary:#F1662B; --primary-2:#F59A3C; --primary-deep:#D8481B;
-    --gold:#F5B71D;
-    --cta-a:#EE6C3A; --cta-b:#F7AC5C;
+    --bg-top:#FFF9F1; --bg-bot:#FFEBD2;
+    --primary:#F45722; --primary-2:#FA9C70; --primary-deep:#D8481B;
+    --gold:#FFBF6E;
+    --cta-a:#F45722; --cta-b:#F45722;
+    --tap:#FA9C70;                 /* interactive / pressed state */
     --surface:#FFFFFF;
-    --cream:#FFF8F1; --cream-2:#FCEEE1;
-    --brk:#EBC6A4;                 /* corner-bracket line */
+    --cream:#FFF9F1; --cream-2:#FFEBD2;
+    --peach:#FEEEE9; --peach-2:#FDD9CE; /* light fills that carry dark text */
+    --brk:#FFBF6E;                 /* corner-bracket line */
     --ink:#3A2E28; --ink-2:#9A8B80; --ink-3:#B8A99D;
-    --line:#F1E4D8;
+    --line:#FFEBD2;
     --good:#2E9E5B; --good-bg:#E9F5EE;
-    --mid:#F5A524;
+    --mid:#FFBF6E;
     --bad:#E5484D; --bad-bg:#FCEAEB;
     --radius:24px;
     --shadow:0 10px 30px rgba(196,132,74,.14);
@@ -54,15 +56,15 @@
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
   html,body{height:100%}
   body{
-    font-family:'Poppins',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    font-family:'Figtree',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
     color:var(--ink);
     background:linear-gradient(180deg,var(--bg-top) 0%,var(--bg-bot) 100%);
     background-attachment:fixed;
     -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
   }
-  .serif{font-family:'Playfair Display',Georgia,serif}
+  .serif{font-family:'Lora',Georgia,serif}
   .phone{max-width:440px;margin:0 auto;min-height:100%;position:relative;display:flex;flex-direction:column}
-  .scroll{flex:1 1 auto;padding:calc(12px + env(safe-area-inset-top)) 18px 118px;display:flex;flex-direction:column;gap:13px}
+  .scroll{flex:1 1 auto;padding:calc(12px + env(safe-area-inset-top)) 16px 28px;display:flex;flex-direction:column;gap:13px}
 
   /* ---------- corner-bracket card ---------- */
   .bx{position:relative;background:var(--cream);border-radius:var(--radius);box-shadow:var(--shadow)}
@@ -99,14 +101,13 @@
 
   /* ---------- band + reason lines (under the score) ---------- */
   .scorelines{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;padding:2px 10px 0}
-  .band{font-family:'Playfair Display',Georgia,serif;font-size:16.5px;font-weight:600;color:var(--ink);line-height:1.35}
-  .reason{font-size:12.5px;font-weight:500;color:var(--ink-2)}
+  .band{font-family:'Lora',Georgia,serif;font-size:16.5px;font-weight:600;color:var(--ink);line-height:1.35}
   .reason .star{color:var(--gold);margin-right:3px}
 
   /* ---------- rashi pill trigger + hint ---------- */
   .selector{display:flex;flex-direction:column;align-items:center;gap:6px}
   .sign-pill{display:inline-flex;align-items:center;gap:10px;border:1px solid #F2E1D2;background:var(--surface);border-radius:999px;padding:7px 13px 7px 8px;cursor:pointer;box-shadow:var(--shadow-sm);font-family:inherit;transition:transform .12s ease}
-  .sign-pill:active{transform:scale(.97)}
+  .sign-pill:active{transform:scale(.97);background:var(--peach)}
   .sign-pill .disc{position:relative;width:38px;height:38px;border-radius:50%;overflow:hidden;background:#FFF2DE;flex:0 0 auto}
   .sign-pill .disc img{width:100%;height:100%;object-fit:cover;display:block}
   .sign-pill .sp-txt{display:flex;flex-direction:column;align-items:flex-start}
@@ -131,12 +132,12 @@
   .xfade.out{opacity:0}
 
   /* ---------- section title ---------- */
-  .sec-title{display:flex;align-items:center;gap:8px;font-family:'Playfair Display',serif;
+  .sec-title{display:flex;align-items:center;gap:8px;font-family:'Lora',serif;
     font-size:18px;font-weight:600;color:var(--primary);letter-spacing:.2px}
   .sec-title .ic{font-size:16px;line-height:1}
 
   /* ---------- reading + lucky (one widget) ---------- */
-  .reading{padding:20px 16px 18px}
+  .reading{padding:16px}
   .reading p.ov{font-size:13.5px;line-height:1.55;color:#5A4A40;font-weight:400;margin-top:9px}
   .divider{height:1px;background:var(--line);margin:14px 2px}
   .lucky{display:flex;gap:9px}
@@ -149,8 +150,8 @@
   .lu .lbl{font-size:9px;font-weight:600;color:var(--ink-2);letter-spacing:.5px;margin-top:6px}
 
   /* ---------- things to look out for (curiosity card) ---------- */
-  .lookout{padding:20px 18px 20px;cursor:pointer}
-  .lo-lead{font-family:'Playfair Display',Georgia,serif;font-size:15px;font-weight:600;color:var(--ink);line-height:1.4;margin-top:12px}
+  .lookout{padding:16px;cursor:pointer}
+  .lo-lead{font-family:'Lora',Georgia,serif;font-size:15px;font-weight:600;color:var(--ink);line-height:1.4;margin-top:12px}
   .lo-list{list-style:none;margin-top:13px;display:flex;flex-direction:column;gap:10px}
   .lo-point{display:flex;gap:10px;align-items:flex-start}
   .lo-num{flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
@@ -158,17 +159,16 @@
   /* ---------- astrologer chat bubble (inside the look-out card) ---------- */
   .astro-row{display:flex;align-items:center;margin-top:16px}
   .astro-ava{position:relative;z-index:2;flex:0 0 auto;width:58px;height:58px;border-radius:50%;border:4px solid #FFFFFF;box-shadow:0 6px 16px rgba(196,132,74,.30);background:linear-gradient(135deg,#E2A76A,#BF7C3E);display:flex;align-items:flex-end;justify-content:center;margin-right:-14px}
-  .astro-ava svg{width:72%;height:72%;display:block}
+  .astro-ava img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
   .astro-ava .dot{position:absolute;right:1px;bottom:1px;width:13px;height:13px;border-radius:50%;background:#2E9E5B;border:2.5px solid #fff}
   .bubble{flex:1 1 auto;background:var(--surface);border-radius:20px;padding:14px 16px 11px 24px;box-shadow:0 10px 24px rgba(196,132,74,.16)}
   .b-txt{font-size:14.5px;font-weight:600;color:var(--ink);line-height:1.45}
   .b-dots{display:flex;gap:5px;margin-top:8px}
-  .b-dots i{width:6px;height:6px;border-radius:50%;background:#D9C9BA;animation:typedot 1.3s ease-in-out infinite}
+  .b-dots i{width:6px;height:6px;border-radius:50%;background:var(--peach-2);animation:typedot 1.3s ease-in-out infinite}
   .b-dots i:nth-child(2){animation-delay:.16s}
   .b-dots i:nth-child(3){animation-delay:.32s}
   @keyframes typedot{0%,60%,100%{opacity:.35;transform:translateY(0)}30%{opacity:1;transform:translateY(-2px)}}
-  .astro-ready{text-align:center;font-size:12.5px;font-weight:600;color:#8C7263;margin-top:12px}
-  @keyframes breathe-cta{0%,100%{box-shadow:0 10px 26px rgba(238,108,58,.40)}50%{box-shadow:0 12px 34px rgba(238,108,58,.62)}}
+  @keyframes breathe-cta{0%,100%{box-shadow:0 10px 26px rgba(244,87,34,.40)}50%{box-shadow:0 12px 34px rgba(244,87,34,.62)}}
   @media (prefers-reduced-motion:reduce){
     .b-dots i{animation:none}
     .cta-btn{animation:none!important}
@@ -179,8 +179,8 @@
   body.sheet-open .scrim{opacity:1;pointer-events:auto}
   .sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-width:440px;margin:0 auto;background:var(--surface);border-radius:26px 26px 0 0;box-shadow:0 -12px 40px rgba(120,70,30,.28);transform:translateY(103%);transition:transform .3s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;max-height:72vh;max-height:72dvh;padding-top:10px}
   body.sheet-open .sheet{transform:translateY(0)}
-  .sh-handle{width:44px;height:5px;border-radius:999px;background:#E8D5C2;margin:0 auto 10px;flex:0 0 auto}
-  .sh-title{font-family:'Playfair Display',Georgia,serif;font-size:19px;font-weight:600;color:var(--ink);text-align:center}
+  .sh-handle{width:44px;height:5px;border-radius:999px;background:var(--peach-2);margin:0 auto 10px;flex:0 0 auto}
+  .sh-title{font-family:'Lora',Georgia,serif;font-size:19px;font-weight:600;color:var(--ink);text-align:center}
   .sh-sub{font-size:12.5px;color:var(--ink-2);text-align:center;margin-top:3px;padding:0 26px}
   .sh-list{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:9px;margin-top:6px}
   .sh-row{display:flex;align-items:center;gap:12px;background:var(--cream);border:2px solid transparent;border-radius:16px;padding:9px 12px;cursor:pointer;flex:0 0 auto}
@@ -196,20 +196,23 @@
   /* ---------- sticky CTA ---------- */
   .cta-bar{position:fixed;left:0;right:0;bottom:0;z-index:30;
     padding:12px 16px calc(14px + env(safe-area-inset-bottom));
-    background:linear-gradient(180deg,rgba(251,228,210,0),var(--bg-bot) 40%)}
+    background:linear-gradient(180deg,rgba(251,228,210,0),var(--bg-bot) 40%);
+    transition:transform .28s ease,opacity .28s ease}
+  .cta-bar.off{transform:translateY(120%);opacity:0;pointer-events:none}
+  .cta-inline{padding:2px 0 4px}
   .cta-bar .inner{max-width:440px;margin:0 auto}
   .cta-btn{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;
     background:linear-gradient(90deg,var(--cta-a),var(--cta-b));color:#fff;border:none;
     border-radius:18px;padding:17px;font-family:inherit;font-size:17px;font-weight:700;letter-spacing:.3px;
-    cursor:pointer;box-shadow:0 10px 26px rgba(238,108,58,.40);transition:transform .12s ease}
-  .cta-btn:active{transform:scale(.985)}
+    cursor:pointer;box-shadow:0 10px 26px rgba(244,87,34,.40);transition:transform .12s ease}
+  .cta-btn:active{transform:scale(.985);background:var(--tap)}
   .cta-btn{animation:breathe-cta 2.6s ease-in-out infinite}
   .cta-btn svg{width:21px;height:21px;flex:0 0 auto}
 
   /* ---------- fallback ---------- */
   .fallback{display:none;flex-direction:column;align-items:center;justify-content:center;
     text-align:center;padding:60px 30px;gap:14px;flex:1}
-  .fallback h2{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--ink)}
+  .fallback h2{font-family:'Lora',serif;font-size:22px;font-weight:600;color:var(--ink)}
   .fallback p{font-size:14px;color:#6E5648;line-height:1.5}
 
   .pop{animation:pop .5s ease both}
@@ -219,9 +222,9 @@
   .gate{display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;padding:48px 30px}
   body.state-gate .gate{display:flex}
   body.state-gate .scroll,body.state-gate .fallback,body.state-gate .cta-bar{display:none}
-  .gate h2{font-family:'Playfair Display',serif;font-size:23px;font-weight:600;color:var(--ink)}
+  .gate h2{font-family:'Lora',serif;font-size:23px;font-weight:600;color:var(--ink)}
   .gate p{font-size:14px;color:#6E5648;line-height:1.55;max-width:280px}
-  .gate .g-cta{margin-top:6px;display:inline-flex;align-items:center;gap:9px;border:none;cursor:pointer;padding:15px 26px;border-radius:16px;font:600 15px 'Poppins',sans-serif;color:#fff;background:linear-gradient(90deg,#F1662B,#F5972A);box-shadow:0 10px 24px rgba(241,102,43,.34)}
+  .gate .g-cta{margin-top:6px;display:inline-flex;align-items:center;gap:9px;border:none;cursor:pointer;padding:15px 26px;border-radius:16px;font:600 15px 'Figtree',sans-serif;color:#fff;background:linear-gradient(90deg,#F45722,#F5972A);box-shadow:0 10px 24px rgba(241,102,43,.34)}
   .gate .g-note{font-size:12px;color:#9A8574}
   /* ---------- shimmer skeletons ---------- */
   @keyframes shimmer{0%{background-position:-240px 0}100%{background-position:240px 0}}
@@ -232,11 +235,11 @@
   .is-loading .band.skeltxt{min-width:220px}
   .is-loading .reason.skeltxt{min-width:170px}
   /* ---------- offline nudge pill ---------- */
-  .offline-pill{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:86px;z-index:35;align-items:center;gap:10px;padding:9px 14px;border-radius:999px;background:#3A2A20;color:#FCEBD6;font:500 12.5px 'Poppins',sans-serif;box-shadow:0 8px 22px rgba(0,0,0,.22);max-width:88%}
+  .offline-pill{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:86px;z-index:35;align-items:center;gap:10px;padding:9px 14px;border-radius:999px;background:#3A2A20;color:#FCEBD6;font:500 12.5px 'Figtree',sans-serif;box-shadow:0 8px 22px rgba(0,0,0,.22);max-width:88%}
   body.is-offline .offline-pill{display:inline-flex}
-  .offline-pill button{border:none;cursor:pointer;background:#F1662B;color:#fff;border-radius:999px;padding:5px 12px;font:600 12px 'Poppins',sans-serif}
+  .offline-pill button{border:none;cursor:pointer;background:#F45722;color:#fff;border-radius:999px;padding:5px 12px;font:600 12px 'Figtree',sans-serif}
   /* ---------- retry on fallback ---------- */
-  .fallback .retry{margin-top:8px;border:none;cursor:pointer;padding:12px 24px;border-radius:14px;font:600 14px 'Poppins',sans-serif;color:#fff;background:linear-gradient(90deg,#F1662B,#F5972A);box-shadow:0 8px 20px rgba(241,102,43,.3)}
+  .fallback .retry{margin-top:8px;border:none;cursor:pointer;padding:12px 24px;border-radius:14px;font:600 14px 'Figtree',sans-serif;color:#fff;background:linear-gradient(90deg,#F45722,#F5972A);box-shadow:0 8px 20px rgba(241,102,43,.3)}
 </style>
 </head>
 <body>
@@ -260,7 +263,7 @@
         <svg width="158" height="158" viewBox="0 0 158 158">
           <defs>
             <linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#F1662B"/>
+              <stop offset="0%" stop-color="#F45722"/>
               <stop offset="100%" stop-color="#F5B71D"/>
             </linearGradient>
           </defs>
@@ -277,7 +280,6 @@
     <!-- ============ BAND + REASON (why this score) ============ -->
     <section class="scorelines xfade" id="scoreLines">
       <div class="band skeltxt" id="bandText">&nbsp;</div>
-      <div class="reason skeltxt" id="reasonText">&nbsp;</div>
     </section>
 
     <!-- ============ RASHI PILL (opens the choose sheet) ============ -->
@@ -318,16 +320,25 @@
       </ol>
       <div class="astro-row">
         <span class="astro-ava" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="8.6" r="3.7" fill="rgba(255,255,255,.92)"/><path d="M4.8 20 C5.8 15.6 8.8 13.9 12 13.9 C15.2 13.9 18.2 15.6 19.2 20 Z" fill="rgba(255,255,255,.92)"/></svg>
+          <img src="data:image/jpeg;base64,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" alt="">
           <span class="dot"></span>
         </span>
         <div class="bubble">
-          <div class="b-txt">These 3 signs are telling you something. Let me explain what.</div>
+          <div class="b-txt">These 3 signs are telling you something. Ask and know what they mean.</div>
           <div class="b-dots" aria-hidden="true"><i></i><i></i><i></i></div>
         </div>
       </div>
-      <div class="astro-ready">An astrologer is ready to talk</div>
     </section>
+
+    <!-- ============ INLINE CTA (the sticky bar appears only when this is off-screen) ============ -->
+    <div class="cta-inline xfade" id="ctaInline">
+      <button class="cta-btn" id="ctaBtnInline">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M21 15a2 2 0 01-2 2H8l-4 4V6a2 2 0 012-2h13a2 2 0 012 2z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Talk to an Astrologer</span>
+      </button>
+    </div>
 
   </main>
 
@@ -440,75 +451,75 @@ const FALLBACK_PAYLOAD = {
   date:"2026-07-20", lang:"en", timezone:"Asia/Kolkata",
   rashis:[
     {sign:"aries", score:72,
-     band:"An old problem finally starts to clear",
+     band:"One old problem can end today",
      reason:"Mars is working with you, not against you",
-     insight:"The stars favour finishing old work today, not starting new. A problem that has followed you for days will loosen by evening. Money choices are better paused this week, because Mercury is moving slow. Keep the evening for family, one talk there will settle your mind.",
+     insight:"Today is for finishing old work, not starting new. A problem that troubled you for days will ease by evening. Mercury is slow, so hold money choices. One talk at home will settle your mind.",
      signs:["One problem that kept returning is ready to close, sooner than you expect.","A money step this week has a wrong time and a right time.","Someone at home is waiting for more of your evening."],
-     lucky:{num:9, time:"7:15 AM", cols:["#F1662B","#F5B71D","#2E9E5B"]}},
+     lucky:{num:9, time:"7:15 AM", cols:["#F45722","#F5B71D","#2E9E5B"]}},
     {sign:"taurus", score:61,
-     band:"A slow day that protects you",
+     band:"A slow day is protecting you",
      reason:"Venus asks you to review, not rush",
-     insight:"Today is built for going over things, not starting them. An old task you know well will go smoother than anything new. Watch your spending today, a careful look will show you one leak. A call from someone far away can lift your whole day.",
+     insight:"Today is good for old work, not new starts. A task you know well will go smooth. Check your spending, one small leak will show up. A call from far away can lift your day.",
      signs:["A person far from you is about to reach out with something good.","One regular expense is quietly taking more than it should.","A new plan can wait, and waiting will actually help it."],
      lucky:{num:6, time:"6:40 PM", cols:["#2E9E5B","#8FD3B6","#F5B71D"]}},
     {sign:"gemini", score:56,
-     band:"A day to fix, not to start",
+     band:"Today is for fixing, not starting",
      reason:"Mercury, your planet, is moving slow this week",
-     insight:"Mercury rules your sign, and it is moving slow till the 24th. So old plans need a second look before they move ahead. One small decision today quietly pushes a big goal forward. An old friend or contact is worth reconnecting with now. Do not force results, let them come.",
+     insight:"Mercury rules your sign and it is slow right now. Give old plans one more look before moving. One small choice today quietly helps a big goal. An old friend is worth calling now.",
      signs:["One small choice today is connected to a much bigger goal.","An old contact is thinking about you more than you know.","A plan you are pushing hard needs one correction first."],
-     lucky:{num:5, time:"11:20 AM", cols:["#F5A524","#7EC8E3","#F1662B"]}},
+     lucky:{num:5, time:"11:20 AM", cols:["#F5A524","#7EC8E3","#F45722"]}},
     {sign:"cancer", score:84,
-     band:"Your work is getting noticed today",
+     band:"Your work is being noticed today",
      reason:"Jupiter is sitting strong in your sign",
-     insight:"Jupiter is strong in your sign right now, and it shows. Senior people are watching your work with a good eye today. An unfinished plan from before deserves a fresh look, it can move now. Keep office worries at the office, home will feel light tonight.",
+     insight:"Jupiter is strong in your sign today. Senior people are seeing your work with a good eye. An old plan can finally move, give it a fresh look. Home will feel light tonight.",
      signs:["A senior person has already noticed you, the result comes soon.","One old plan you dropped is worth picking up this week.","A good change at work is closer than it appears."],
      lucky:{num:2, time:"9:00 PM", cols:["#C9D6FF","#F5B71D","#E5A0C8"]}},
     {sign:"leo", score:68,
-     band:"New learning opens a door today",
+     band:"One lesson today opens a new door",
      reason:"The Sun pushes you to grow today",
-     insight:"Today pulls you out of routine, and that is a good thing. A teacher or senior will say one line that stays with you. Papers and forms need a second read this week, so go slow there. A short trip or a new course is better than it first looks.",
+     insight:"Today pulls you out of routine, and that is good. A senior will say one line that stays with you. Read papers and forms twice this week. A short trip may bring more than you expect.",
      signs:["One piece of advice today is worth more than it sounds.","A paper or form is hiding one detail you should read twice.","A chance to learn something new has good timing right now."],
-     lucky:{num:1, time:"12:30 PM", cols:["#F1662B","#F5B71D","#E5484D"]}},
+     lucky:{num:1, time:"12:30 PM", cols:["#F45722","#F5B71D","#E5484D"]}},
     {sign:"virgo", score:88,
-     band:"One of your best days this month",
+     band:"Luck is extra strong today",
      reason:"The Moon is sitting in your sign today",
-     insight:"The Moon spends today in your sign, a strong sign of luck. Money matters you kept postponing will open easily now. A difficult talk becomes clear if you have it today. Trust your own judgement, it is sharper than usual. Let one old worry go tonight.",
+     insight:"The Moon is in your sign today, a lucky sign. Money matters you kept pushing away will open easily. A hard talk becomes clear if you have it today. Let one old worry go tonight.",
      signs:["A money matter you postponed is finally ready to move.","One difficult talk will go your way if it happens today.","Your judgement is stronger today, one choice will prove it."],
      lucky:{num:5, time:"8:10 AM", cols:["#8FD3B6","#F0D9A8","#B8A99D"]}},
     {sign:"libra", score:63,
-     band:"A quiet day that clears your head",
+     band:"Your answer is in the quiet hours",
      reason:"Venus turns your mind toward balance",
-     insight:"The day favours quiet over noise for you. Answers you were chasing will come when you sit still. One plan grows stronger if you simply review it today. Hold your wallet close, an impulse buy will tempt you by evening.",
+     insight:"The day favours quiet over noise. Answers will come when you sit still. One plan grows stronger if you review it today. Watch your wallet, an impulse buy will tempt you by evening.",
      signs:["The answer you are looking for arrives in a quiet moment.","One plan needs review, not speed, and it will reward you.","An evening temptation to spend is not worth it this time."],
      lucky:{num:6, time:"5:45 PM", cols:["#E5A0C8","#C9D6FF","#F5B71D"]}},
     {sign:"scorpio", score:76,
-     band:"One conversation changes your day",
+     band:"One talk can change your week",
      reason:"Mars connects you to the right people",
-     insight:"An unexpected talk today carries a real direction for you. The right person is closer than you think, so share your idea. Work you build with others moves twice as fast now. Keep your focus on what already exists, not on new starts.",
+     insight:"An unexpected talk today carries a real hint for you. The right person is closer than you think. Work done with others moves fast now. Stay with what you have, not new starts.",
      signs:["A person you did not plan to meet has something you need.","Your idea grows the moment you say it out loud to the right one.","Help you did not ask for is on its way to you."],
      lucky:{num:9, time:"10:15 PM", cols:["#8A2846","#E5484D","#F5B71D"]}},
     {sign:"sagittarius", score:58,
-     band:"Quiet effort today, reward later",
+     band:"Quiet work today pays later",
      reason:"Jupiter asks for patience from you today",
-     insight:"Today tests how steady you are, not how fast. Your work is being counted, even if nobody says it yet. The praise you deserve is coming, just not today. One trusted friend can show you what you are missing.",
+     insight:"Today tests how steady you are, not how fast. Your work is being counted, even if nobody says it. The praise you deserve is coming, just not today. One trusted friend can show what you are missing.",
      signs:["Someone is keeping track of your effort without telling you.","A reward for old work is delayed, not cancelled.","One friend sees your situation clearer than you do right now."],
-     lucky:{num:3, time:"4:20 PM", cols:["#F1662B","#7EC8E3","#F5B71D"]}},
+     lucky:{num:3, time:"4:20 PM", cols:["#F45722","#7EC8E3","#F5B71D"]}},
     {sign:"capricorn", score:79,
-     band:"A strong day for your next step",
+     band:"Your next step is very close",
      reason:"Saturn steadies every step you take today",
-     insight:"The stars back careful planning today. Collect full information before you sign or send anything this week. Someone close will drop advice that turns out unexpectedly useful. One firm step today makes your position stronger for the month.",
+     insight:"The stars back careful planning today. Collect full details before you sign or send anything. Someone close will drop advice that proves useful. One firm step today makes your month stronger.",
      signs:["Advice from someone near you is worth more than it sounds.","One paper or payment needs full checking before it moves.","A single step this week can secure your whole month."],
      lucky:{num:8, time:"7:50 AM", cols:["#5A4A40","#B8A99D","#2E9E5B"]}},
     {sign:"aquarius", score:50,
-     band:"A careful day, choose words slowly",
+     band:"Your words have power today",
      reason:"Saturn is testing your patience today",
-     insight:"Today asks for soft words and open talk. A misunderstanding near you clears the moment you speak honestly. Money that is shared, in family or work, needs a clear conversation. Go slow, your patience today quietly becomes your strength.",
+     insight:"Today asks for soft words and open talk. A misunderstanding clears the moment you speak honestly. Shared money needs one clear conversation. Your patience today quietly becomes your strength.",
      signs:["One misunderstanding is waiting for a single honest sentence.","A shared money matter needs daylight before it grows.","Words said in a hurry today can cost more than they seem."],
      lucky:{num:11, time:"9:30 AM", cols:["#7EC8E3","#C9D6FF","#F5B71D"]}},
     {sign:"pisces", score:71,
-     band:"Small moments carry big warmth today",
+     band:"Small moments mean big things today",
      reason:"The Moon turns your eyes to people you love",
-     insight:"The day belongs to your people, not your tasks. One honest talk will bring someone closer than before. Work moves slowly, and that is normal today, do not read it wrong. Keep the evening for something creative or someone dear.",
+     insight:"The day belongs to your people, not your tasks. One honest talk will bring someone closer. Work moves slow today and that is normal. Keep the evening for someone dear.",
      signs:["One honest sentence can repair more than you expect.","A slow day at work is not a sign of trouble, it only looks like one.","Your evening holds a warm moment if you keep it free."],
      lucky:{num:7, time:"6:15 AM", cols:["#7EC8E3","#8FD3B6","#E5A0C8"]}}
   ]
@@ -518,11 +529,11 @@ const FALLBACK_PAYLOAD = {
 const LUCKY_NUM   = {mesh:9,vrishabh:6,mithun:5,kark:2,simha:1,kanya:5,tula:6,vrishchik:9,dhanu:3,makar:8,kumbh:11,meen:7};
 const LUCKY_TIME  = {mesh:"7:15 AM",vrishabh:"6:40 PM",mithun:"11:20 AM",kark:"9:00 PM",simha:"12:30 PM",kanya:"8:10 AM",tula:"5:45 PM",vrishchik:"10:15 PM",dhanu:"4:20 PM",makar:"7:50 AM",kumbh:"9:30 AM",meen:"6:15 AM"};
 const LUCKY_COLS  = {
-  mesh:["#F1662B","#F5B71D","#2E9E5B"], vrishabh:["#2E9E5B","#8FD3B6","#F5B71D"],
-  mithun:["#F5A524","#7EC8E3","#F1662B"], kark:["#C9D6FF","#F5B71D","#E5A0C8"],
-  simha:["#F1662B","#F5B71D","#E5484D"], kanya:["#8FD3B6","#F0D9A8","#B8A99D"],
+  mesh:["#F45722","#F5B71D","#2E9E5B"], vrishabh:["#2E9E5B","#8FD3B6","#F5B71D"],
+  mithun:["#F5A524","#7EC8E3","#F45722"], kark:["#C9D6FF","#F5B71D","#E5A0C8"],
+  simha:["#F45722","#F5B71D","#E5484D"], kanya:["#8FD3B6","#F0D9A8","#B8A99D"],
   tula:["#E5A0C8","#C9D6FF","#F5B71D"], vrishchik:["#8A2846","#E5484D","#F5B71D"],
-  dhanu:["#F1662B","#7EC8E3","#F5B71D"], makar:["#5A4A40","#B8A99D","#2E9E5B"],
+  dhanu:["#F45722","#7EC8E3","#F5B71D"], makar:["#5A4A40","#B8A99D","#2E9E5B"],
   kumbh:["#7EC8E3","#C9D6FF","#F5B71D"], meen:["#7EC8E3","#8FD3B6","#E5A0C8"]
 };
 
@@ -583,8 +594,6 @@ function portraitInner(r){
 
 function renderScoreLines(r){
   document.getElementById("bandText").textContent = r.band || "";
-  const re = document.getElementById("reasonText");
-  re.innerHTML = r.reason ? '<span class="star">✦</span> ' + escapeHtml(r.reason) : "";
 }
 function renderPill(r){
   const disc = document.getElementById("pillDisc");
@@ -813,6 +822,16 @@ document.getElementById("signPill").addEventListener("click", openSheet);
 document.getElementById("sheetScrim").addEventListener("click", closeSheet);
 document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeSheet(); });
 document.getElementById("ctaBtn").addEventListener("click", fireCta);
+document.getElementById("ctaBtnInline").addEventListener("click", fireCta);
+/* Sticky CTA only while the inline CTA is off-screen. */
+(function(){
+  const bar = document.querySelector(".cta-bar");
+  const inline = document.getElementById("ctaInline");
+  if(!bar || !inline || !("IntersectionObserver" in window)) return;
+  new IntersectionObserver(function(entries){
+    bar.classList.toggle("off", entries[0].isIntersecting);
+  }, {threshold:0.35}).observe(inline);
+})();
 document.getElementById("lookoutCard").addEventListener("click", fireCta); // look-out card taps through to CTA
 var _g=document.getElementById("gateBtn");  if(_g) _g.addEventListener("click", openApp);
 var _r=document.getElementById("retryBtn"); if(_r) _r.addEventListener("click", retry);

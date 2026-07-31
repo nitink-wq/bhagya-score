@@ -46,7 +46,7 @@ services:
       CONTENT_RUN_HOUR_IST: "1"
       CONTENT_LANGS: "en"
       GEMINI_API_KEY: "${GEMINI_API_KEY:-}"
-      GEMINI_MODEL: "${GEMINI_MODEL:-gemini-2.0-flash}"
+      GEMINI_MODEL: "${GEMINI_MODEL:-gemini-2.5-flash}"
       INTERNAL_TOKEN: "${INTERNAL_TOKEN:-}"
     ports:
       - "3000:3000"
@@ -67,7 +67,7 @@ services:
     environment:
       DATABASE_URL: postgres://bhagya:bhagya@postgres:5432/bhagya
       GEMINI_API_KEY: "${GEMINI_API_KEY:-}"
-      GEMINI_MODEL: "${GEMINI_MODEL:-gemini-2.0-flash}"
+      GEMINI_MODEL: "${GEMINI_MODEL:-gemini-2.5-flash}"
       CONTENT_LANGS: "${CONTENT_LANGS:-en}"
       GENERATE_DATE: "${GENERATE_DATE:-}"
     depends_on:

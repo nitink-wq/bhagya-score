@@ -82,9 +82,9 @@ export const RESPONSE_SCHEMA = signArraySchema(12);
 const SCHEMA_FOR_PROMPT = `{
   "sign": "aries",
   "score": 78,                    // int 42-94
-  "band": "string",               // max 60 chars, italic feeling-line
+  "band": "string",               // max 45 chars, short direct curious line under the score
   "reason": "string",             // max 60 chars, exactly one celestial reference
-  "insight": "string",            // max 420 chars, 3 to 5 short sentences, ends on a mild open thread
+  "insight": "string",            // max 230 chars, 3 to 4 short sentences, ends on a mild open thread
   "signs": ["string","string","string"], // exactly 3 lines, each max 95 chars, each names one specific thing and stops before the answer
   "lucky": { "num": 9, "time": "7:15 AM", "cols": ["#hex","#hex","#hex"] }
 }`;
@@ -98,8 +98,14 @@ users in small Indian cities. Output strict JSON only: an array of 12 objects,
 one per zodiac sign, in the provided schema.
 
 LANGUAGE RULES:
-- Very plain, simple English. Class 6 to 8 reading level. Short sentences.
-  Everyday words only.
+- The reader lives in a tier 2 or tier 3 Indian city. English is their second
+  or third language and they know only basic English. Use only the most common
+  everyday words, the kind seen in WhatsApp messages and TV ads. Class 5 to 6
+  reading level. Short sentences, one idea per sentence.
+- NO idioms or English phrases that need good English ("close a chapter",
+  "silver lining", "on your side", "turn the page"). Say it straight instead:
+  "an old problem can end today". If a Hindi-first reader would pause at a
+  word, pick an easier word.
 - BANNED words (too heavy or too astro-technical): celestial, cosmic, alignment,
   transit, retrograde, dasha, nakshatra, ascendant, aura, energies, manifest,
   destiny, favourable, auspicious (say "good" or "lucky" instead), circling,
@@ -114,9 +120,14 @@ HARD RULES:
 - score: integer 42 to 94. Across the 12 signs, spread the scores (no more than
   3 signs within 2 points of each other; at least 2 signs above 80, at most 2
   below 55). Everyone cannot have a great day.
+- band: the one line shown right under the score. Short and direct, under 45
+  characters. It hints that the day holds something worth knowing ("One old
+  problem can end today"), never a flat verdict ("A good day"). No questions.
 - reason: exactly one planet reference, in simple words. Nothing technical.
-- insight: 3 to 5 short sentences. It must be easy for a class 10 student,
-  curiosity driven, and led by the day's astrology. Specifics come from times,
+- insight: 3 to 4 short sentences, max 230 characters total. It must be easy
+  for a class 10 student in a small Indian city, curiosity driven, and led by
+  the day's astrology. After reading it the user should feel "this is about my
+  day" and want to ask an astrologer more. Specifics come from times,
   objects and small actions (by evening, an old promise, one phone call).
   Never claim things about the user's actual life (no "your office", "your
   wife"). Must NOT end with full closure ("the day is yours"). Always leave
@@ -198,7 +209,7 @@ const BANNED_WORDS = [
 ];
 const BANNED_PHRASES = ['100%', 'will surely', 'big loss', 'consult now'];
 const PLANETS = ['moon', 'sun', 'venus', 'mercury', 'mars', 'jupiter', 'saturn', 'rahu'];
-const LIMITS: Record<string, number> = { band: 60, reason: 60, insight: 420 };
+const LIMITS: Record<string, number> = { band: 45, reason: 60, insight: 230 };
 const SIGN_LINE_MAX = 95;
 
 function lintText(sign: string, field: string, text: string): void {
@@ -262,9 +273,9 @@ export function validateSign(item: unknown): SignContent {
     throw new Error(`${sign}.reason: must name exactly one planet, found [${planetHits.join(', ') || 'none'}]`);
   }
 
-  // insight: 3 to 5 short sentences
+  // insight: 3 to 4 short sentences
   const sentences = (fields.insight.match(/[.!?](\s|$)/g) ?? []).length;
-  if (sentences < 3 || sentences > 5) throw new Error(`${sign}.insight: ${sentences} sentences, need 3-5`);
+  if (sentences < 3 || sentences > 4) throw new Error(`${sign}.insight: ${sentences} sentences, need 3-4`);
 
   // lucky
   const lk = (o.lucky ?? {}) as Record<string, unknown>;
@@ -342,8 +353,9 @@ async function callGemini(cfg: AppConfig, userPrompt: string, expectedCount: num
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), cfg.gemini.timeoutMs);
+  let res: Response;
   try {
-    const res = await fetch(url, {
+    res = await fetch(url, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       signal: controller.signal,
@@ -357,19 +369,33 @@ async function callGemini(cfg: AppConfig, userPrompt: string, expectedCount: num
         },
       }),
     });
-    if (!res.ok) {
-      const body = await res.text().catch(() => '');
-      throw new Error(`Gemini HTTP ${res.status}: ${body.slice(0, 500)}`);
+  } catch (err) {
+    // Network-level failures (blocked egress, DNS, timeout) surface here. Node's
+    // fetch throws with a blank top-level message and the real reason in `.cause`,
+    // so unwrap it — otherwise the caller sees an empty error and cannot diagnose.
+    if (controller.signal.aborted) {
+      throw new Error(`Gemini request timed out after ${cfg.gemini.timeoutMs}ms (no response from ${cfg.gemini.apiBase})`);
     }
-    const data = (await res.json()) as {
-      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
-    };
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!text) throw new Error('Gemini returned no text candidate');
-    return text;
+    const cause = (err as { cause?: unknown }).cause;
+    const causeMsg =
+      cause instanceof Error ? cause.message :
+      cause !== undefined ? String(cause) : '';
+    const base = err instanceof Error ? err.message : String(err);
+    throw new Error(`Gemini request failed to reach ${cfg.gemini.apiBase}: ${[base, causeMsg].filter(Boolean).join(' / ') || 'unknown network error'}`);
   } finally {
     clearTimeout(timer);
   }
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    throw new Error(`Gemini HTTP ${res.status}: ${body.slice(0, 500)}`);
+  }
+  const data = (await res.json()) as {
+    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+  };
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('Gemini returned no text candidate');
+  return text;
 }
 
 /** Yesterday's scores + last-3-days band lines, for the anti-repetition prompt context. */

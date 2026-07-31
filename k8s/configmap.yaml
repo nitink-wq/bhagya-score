@@ -14,6 +14,6 @@ data:
   CONTENT_RUN_HOUR_IST: "1"
   CONTENT_GENERATE_OFFSET_DAYS: "0"
   CONTENT_LANGS: "en"
-  GEMINI_MODEL: "gemini-2.0-flash"
+  GEMINI_MODEL: "gemini-2.5-flash"
   # Set to "true" to let the app pods self-run the nightly job instead of using the CronJob.
   CONTENT_SCHEDULER_ENABLED: "true"
