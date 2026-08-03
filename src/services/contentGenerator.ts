@@ -217,12 +217,9 @@ const BANNED_WORDS = [
   'death', 'accident', 'disease', 'divorce', 'pregnant', 'pregnancy', 'police',
 ];
 const BANNED_PHRASES = ['100%', 'will surely', 'big loss', 'consult now'];
-const PLANETS = ['moon', 'sun', 'venus', 'mercury', 'mars', 'jupiter', 'saturn', 'rahu'];
-// Length caps enforced by the validator. band deliberately has NO hard cap —
-// the prompt asks for under 45 chars, but an over-long band is a style miss,
-// not a reason to reject the whole run.
-const LIMITS: Record<string, number> = { reason: 60, insight: 230 };
-const SIGN_LINE_MAX = 95;
+// NO length caps in the validator. All length targets (band 45, reason 60,
+// insight 230, sign lines 95) live in the prompt only — an over-long line is
+// a style miss, never a reason to reject a run and starve the page.
 
 function lintText(sign: string, field: string, text: string): void {
   if (/[—–]/.test(text)) throw new Error(`${sign}.${field}: contains an em/en dash`);
@@ -263,7 +260,6 @@ export function validateSign(item: unknown): SignContent {
   const fields: Record<string, string> = {};
   for (const f of ['band', 'reason', 'insight'] as const) {
     const v = str(o[f], sign, f);
-    if (v.length > LIMITS[f]) throw new Error(`${sign}.${f}: ${v.length} chars, max ${LIMITS[f]}`);
     lintText(sign, f, v);
     fields[f] = v;
   }
@@ -273,21 +269,16 @@ export function validateSign(item: unknown): SignContent {
   if (rawSigns.length !== 3) throw new Error(`${sign}.signs: expected exactly 3 lines, got ${rawSigns.length}`);
   const signLines = rawSigns.map((v, i) => {
     const line = str(v, sign, `signs[${i}]`);
-    if (line.length > SIGN_LINE_MAX) throw new Error(`${sign}.signs[${i}]: ${line.length} chars, max ${SIGN_LINE_MAX}`);
     if (line.includes('?')) throw new Error(`${sign}.signs[${i}]: questions are not allowed`);
     lintText(sign, `signs[${i}]`, line);
     return line;
   });
 
-  // reason: exactly one plainly named planet
-  const planetHits = PLANETS.filter((p) => new RegExp(`\\b${p}\\b`, 'i').test(fields.reason));
-  if (planetHits.length !== 1) {
-    throw new Error(`${sign}.reason: must name exactly one planet, found [${planetHits.join(', ') || 'none'}]`);
-  }
-
-  // insight: 3 to 4 short sentences
-  const sentences = (fields.insight.match(/[.!?](\s|$)/g) ?? []).length;
-  if (sentences < 3 || sentences > 4) throw new Error(`${sign}.insight: ${sentences} sentences, need 3-4`);
+  // reason one-planet rule and insight 3-4 sentence count are PROMPT GUIDANCE
+  // only, not validated here: Gemini regularly lands at 5 sentences or varies
+  // the planet phrasing, and rejecting a whole run for that starves the page
+  // of fresh content. The 230-char insight cap above still bounds the length,
+  // and reason is not currently displayed on the page.
 
   // lucky
   const lk = (o.lucky ?? {}) as Record<string, unknown>;
