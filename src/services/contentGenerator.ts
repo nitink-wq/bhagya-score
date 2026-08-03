@@ -218,7 +218,10 @@ const BANNED_WORDS = [
 ];
 const BANNED_PHRASES = ['100%', 'will surely', 'big loss', 'consult now'];
 const PLANETS = ['moon', 'sun', 'venus', 'mercury', 'mars', 'jupiter', 'saturn', 'rahu'];
-const LIMITS: Record<string, number> = { band: 45, reason: 60, insight: 230 };
+// Length caps enforced by the validator. band deliberately has NO hard cap —
+// the prompt asks for under 45 chars, but an over-long band is a style miss,
+// not a reason to reject the whole run.
+const LIMITS: Record<string, number> = { reason: 60, insight: 230 };
 const SIGN_LINE_MAX = 95;
 
 function lintText(sign: string, field: string, text: string): void {
@@ -500,7 +503,12 @@ export async function generateAndStore(
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       log?.error({ targetDate, lang, err: message }, 'daily content generation FAILED — keeping previous day');
-      await runs.record({ targetDate, lang, model: cfg.gemini.model, status: 'failed', error: message.slice(0, 1000) });
+      try {
+        await runs.record({ targetDate, lang, model: cfg.gemini.model, status: 'failed', error: message.slice(0, 1000) });
+      } catch (recordErr) {
+        // Never let audit-log failure mask the real error (e.g. missing table pre-migration).
+        log?.error({ err: recordErr instanceof Error ? recordErr.message : String(recordErr) }, 'could not record failed run');
+      }
       throw err;
     } finally {
       await client.query('SELECT pg_advisory_unlock(hashtextextended($1, 0))', [lockKey]);
