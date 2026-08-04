@@ -817,9 +817,22 @@ async function boot(){
 /* ============================================================================
    WIRING
 ============================================================================ */
+/* Inside the AstroLokal app this page runs in a React Native WebView. Firing a
+   deeplink there stacks a NEW Home screen on top of the webview (page upon
+   page, and the phone back button returns here). Instead we ask the app to
+   close the webview via postMessage; the deeplink is only the fallback for
+   plain browsers. */
+function sendBackAction(){
+  if (window.ReactNativeWebView) {
+    window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'GO_BACK' }));
+    return true;
+  }
+  return false;
+}
 function fireCta(){
   const rashi = (STATE.rashis[STATE.idx] && STATE.rashis[STATE.idx].key) || "";
   trackEvent("cta_click", { user_id:USER_ID, rashi });
+  if (sendBackAction()) return;
   window.location.href = DEEPLINK_SCHEME +
     "&source=bhagya_score&user_id=" + encodeURIComponent(USER_ID) + "&rashi=" + encodeURIComponent(rashi);
 }
@@ -829,6 +842,7 @@ document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeSheet(); });
 document.getElementById("ctaBtn").addEventListener("click", fireCta);
 document.getElementById("backBtn").addEventListener("click", function(){
   trackEvent("back_click", { user_id:USER_ID });
+  if (sendBackAction()) return;
   window.location.href = DEEPLINK_SCHEME + "&source=bhagya_score_back";
 });
 document.getElementById("ctaBtnInline").addEventListener("click", fireCta);
