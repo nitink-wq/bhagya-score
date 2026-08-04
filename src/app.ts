@@ -4,6 +4,7 @@ import fastifyStatic from '@fastify/static';
 import { config } from './config';
 import { Database } from './db/client';
 import { DailyContentRepository } from './db/repositories/dailyContentRepo';
+import { EventsRepository } from './db/repositories/eventsRepo';
 import { GenerationRunsRepository } from './db/repositories/generationRunsRepo';
 import { BhagyaService } from './services/bhagyaService';
 import type { GenerateDeps } from './services/contentGenerator';
@@ -16,6 +17,7 @@ declare module 'fastify' {
   interface FastifyInstance {
     db: Database;
     bhagya: BhagyaService;
+    events: EventsRepository;
     /** Everything the content generator needs; reused by the internal route + scheduler. */
     contentDeps: GenerateDeps;
   }
@@ -39,6 +41,7 @@ export function buildApp(db: Database): FastifyInstance {
   const daily = new DailyContentRepository(db);
   app.decorate('db', db);
   app.decorate('bhagya', new BhagyaService(daily));
+  app.decorate('events', new EventsRepository(db));
   app.decorate('contentDeps', {
     config,
     db,

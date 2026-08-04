@@ -34,6 +34,49 @@ export default async function apiRoutes(app: FastifyInstance): Promise<void> {
     },
   );
 
-  // NOTE: analytics (POST /api/events) intentionally removed for now.
-  // The `events` table + EventsRepository remain in the repo, dormant, for easy re-enable.
+  // POST /api/events — fire-and-forget analytics from the webview.
+  // Always answers 204 fast; an analytics failure must never affect the page.
+  app.post<{ Body: EventBody }>(
+    '/api/events',
+    {
+      schema: {
+        body: {
+          type: 'object',
+          required: ['event'],
+          properties: {
+            event: { type: 'string', minLength: 1, maxLength: 64 },
+            user_id: { type: ['string', 'null'], maxLength: 64 },
+            rashi: { type: ['string', 'null'], maxLength: 16 },
+            lang: { type: ['string', 'null'], maxLength: 8 },
+            ts: { type: ['string', 'null'], maxLength: 40 },
+            props: { type: 'object' },
+          },
+        },
+      },
+    },
+    async (req, reply) => {
+      try {
+        await app.events.insert({
+          event: req.body.event,
+          userId: req.body.user_id ?? null,
+          rashi: req.body.rashi ?? null,
+          lang: req.body.lang ?? null,
+          // client_ts = the device's clock; the events.ts column records server time.
+          props: { ...(req.body.props ?? {}), client_ts: req.body.ts ?? null },
+        });
+      } catch (err) {
+        req.log.warn({ err: err instanceof Error ? err.message : String(err) }, 'event insert failed');
+      }
+      return reply.code(204).send();
+    },
+  );
+}
+
+interface EventBody {
+  event: string;
+  user_id?: string | null;
+  rashi?: string | null;
+  lang?: string | null;
+  ts?: string | null;
+  props?: Record<string, unknown>;
 }

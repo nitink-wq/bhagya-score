@@ -422,10 +422,31 @@ const PORTRAITS = {
 const params  = new URLSearchParams(location.search);
 const USER_ID = params.get("user_id") || "";
 
-/* ---------------- Analytics: DISABLED (nothing is fired) ----------------
-   trackEvent is intentionally a no-op. No network calls, no postMessage.
-   To re-enable later, restore the fetch/postMessage body here. */
-function trackEvent(name, props){ /* no-op */ }
+/* ---------------- Analytics -> POST /api/events (stored in Postgres) ----
+   Every event auto-carries user_id, rashi, and the device time. sendBeacon is
+   used so taps that immediately close the webview (back/CTA) still deliver. */
+function trackEvent(name, props){
+  try{
+    props = props || {};
+    const rashi = props.rashi || props.to ||
+      (STATE.rashis && STATE.rashis[STATE.idx] && STATE.rashis[STATE.idx].key) || null;
+    const body = JSON.stringify({
+      event: name,
+      user_id: USER_ID || null,
+      rashi: rashi,
+      lang: "en",
+      ts: new Date().toISOString(),   // device clock; server also stamps its own time
+      props: props
+    });
+    const url = API_BASE + "/api/events";
+    /* sendBeacon survives the page being closed right after the tap (back/CTA). */
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(url, new Blob([body], {type:"application/json"}));
+    } else {
+      fetch(url, {method:"POST", headers:{"content-type":"application/json"}, body:body, keepalive:true}).catch(function(){});
+    }
+  }catch(e){ /* analytics must never break the page */ }
+}
 
 /* ---------------- Rashi master data (order, names, date ranges) ----------
    Names/ranges are page-owned; the daily payload only carries content. */
